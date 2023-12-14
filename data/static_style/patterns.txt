@@ -1,0 +1,70 @@
+    <defs>
+        <pattern id="landuse-allotments" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/landuse-allotments.png"/>
+        </pattern>
+        <pattern id="landuse-cemetery" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/landuse-cemetery.png"/>
+        </pattern>
+        <pattern id="landuse-forest" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/landuse-forest.png"/>
+        </pattern>
+        <pattern id="landuse-military" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/landuse-military.png"/>
+        </pattern>
+        <pattern id="landuse-orchard" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/landuse-orchard.png"/>
+        </pattern>
+        <pattern id="landuse-quarry" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/landuse-quarry.png"/>
+        </pattern>
+        <pattern id="landuse-salt_pond" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/landuse-salt_pond.png"/>
+        </pattern>
+        <pattern id="military-danger_area" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/military-danger_area.png"/>
+        </pattern>
+        <pattern id="natural-bare_rock" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/natural-bare_rock.png"/>
+        </pattern>
+        <pattern id="natural-scrub" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/natural-scrub.png"/>
+        </pattern>
+        <pattern id="natural-wetland" patternUnits="userSpaceOnUse" height="125" width="125">
+            <image href="textures/natural-wetland.png"/>
+        </pattern>
+    </defs>
+    <style>
+        .landuse-allotments{
+        fill:url(#landuse-allotments)
+        }
+        .amenity-grave_yard,.landuse-cemetery{
+        fill:url(#landuse-cemetery)
+        }
+        .landuse-forest, .natural-wood{
+        fill:url(#landuse-forest)
+        }
+        .landuse-military{
+        fill:url(#landuse-military)
+        }
+        .landuse-orchard,.landuse-plant_nursery,.landuse-vineyard,.leisure-garden{
+        fill:url(#landuse-orchard)
+        }
+        .landuse-quarry{
+        fill:url(#landuse-quarry)
+        }
+        .landuse-salt_pond{
+        fill:url(#landuse-salt_pond)
+        }
+        .military-danger_area{
+        fill:url(#military-danger_area)
+        }
+        .natural-bare_rock, .natral-scree{
+        fill:url(#landuse-quarry)
+        }
+        .natural-scrub{
+        fill:url(#natural-scrub)
+        }
+        .natural-wetland{
+        fill:url(#natural-wetland)
+        }
+    </style>

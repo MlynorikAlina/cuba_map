@@ -1,3 +1,4 @@
 *.osm.pbf
 *.pbf
 python/venv/
+python/land-polygons/
