@@ -1,7 +1,6 @@
 #include <math.h>
 #include <tiles/png_converter/SVGToPNGConverter.h>
 #include "dynamictilesgenerator.h"
-#include "mapoptionsscreen.h"
 #include "qdebug.h"
 
 #include "params.h"
@@ -29,18 +28,18 @@ void DynamicTilesGenerator::startPainting()
 void DynamicTilesGenerator::run()
 {
     for (auto e : checkedDist) {
-        OverpassFilter *filter = SettingsScreen::getFilter(e->text().toInt());
+        OverpassFilter *filter = SettingsScreen::getFilter(e.toInt());
 
-        UpdateMode mode = MapOptionsScreen::updateMapParams(dynamicMapDir+e->text()+"_p.txt", filter, "0","0");
+        UpdateMode mode = updateMapParams(dynamicMapDir+e+"_p.txt", filter, "0","0");
 
         QDirIterator* it = new QDirIterator(OSM_DIR, QStringList("*.osm"),
                               QDir::Files | QDir::NoDotAndDotDot,
                               QDirIterator::Subdirectories);
 
 
-        double frac = min(TILE_STEP, dynamicTilesSize[e->text()].toDouble());
+        double frac = min(TILE_STEP, dynamicTilesSize[e].toDouble());
         int tsize = round(size*TILE_STEP/frac);
-        QString tempAster = PARSED_ASTER + e->text() + "/";
+        QString tempAster = PARSED_ASTER + e + "/";
         QDir dir(tempAster);
         if (!dir.exists())
             dir.mkpath(dir.absolutePath());
@@ -48,7 +47,7 @@ void DynamicTilesGenerator::run()
         AsterParserDynamic *p = new AsterParserDynamic(ASTER_DIR, tempAster, QString::number(tsize), QString::number(TILE_STEP), QString::number(TILE_STEP_PREC));
         p->exec();
 
-        QString outDir = dynamicMapDir + e->text() + "/";
+        QString outDir = dynamicMapDir + e + "/";
         dir.setPath(outDir);
         while (it->hasNext()) {
             it->next();
@@ -69,7 +68,7 @@ void DynamicTilesGenerator::run()
 
             lat = sl[0].toDouble();
             lon = sl[1].toDouble();
-            prec = max(dynamicTilesPrec[e->text()],TILE_STEP_PREC);
+            prec = max(dynamicTilesPrec[e],TILE_STEP_PREC);
 
             OSMToSVGConverter* cv = NULL;
 
@@ -108,7 +107,58 @@ void DynamicTilesGenerator::run()
 
 }
 
-DynamicTilesGenerator::DynamicTilesGenerator(const QString &dynamicMapDir, int size, const QVector<QCheckBox *> &checkedDist) :
+UpdateMode DynamicTilesGenerator::updateMapParams(QString fileOut,
+                                          OverpassFilter *filter, QString lat, QString lon) {
+    QFile file(fileOut);
+    UpdateMode needUpd = UpdateMode::NO_UPDATE;
+    bool filterSame = false;
+    if (!file.open(QIODevice::ReadOnly) || file.size() == 0) {
+        file.close();
+        file.open(QIODevice::WriteOnly);
+        QTextStream s(&file);
+        s << lat << Qt::endl;
+        s << lon;
+        for (auto e : filter->getIncludedFeatures())
+            s << Qt::endl << QString::fromStdString(mf::to_string(e));
+        needUpd = UpdateMode::UPDATE_ALL;
+    } else {
+        QTextStream in(&file);
+        QString tlat = in.readLine();
+        QString tlon = in.readLine();
+        set<mf::MapFeature> includes;
+        while (!in.atEnd()) {
+            includes.insert(mf::from_string(in.readLine().toStdString()));
+        }
+        if (includes == filter->getIncludedFeatures()) {
+            filterSame = true;
+        }
+        bool diffrent_center = tlat.compare(lat) != 0 ||
+                               tlon.compare(lon) != 0;
+        if (diffrent_center || !filterSame) {
+            file.close();
+            file.open(QIODevice::WriteOnly);
+            QTextStream s(&file);
+            if (diffrent_center) {
+                s << lat << Qt::endl;
+                s << lon;
+                needUpd = UpdateMode::UPDATE_ALL;
+            } else {
+                s << tlat << Qt::endl;
+                s << tlon;
+                needUpd = UpdateMode::UPDATE_FILTER;
+            }
+            for (auto e : filter->getIncludedFeatures())
+                s << Qt::endl << QString::fromStdString(mf::to_string(e));
+        }
+    }
+    file.close();
+
+    return needUpd;
+}
+
+
+
+DynamicTilesGenerator::DynamicTilesGenerator(const QString &dynamicMapDir, int size, const QVector<QString> &checkedDist) :
     dynamicMapDir(dynamicMapDir),
     size(size),
     checkedDist(checkedDist)

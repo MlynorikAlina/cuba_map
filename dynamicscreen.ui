@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ParseScreen</class>
- <widget class="QWidget" name="ParseScreen">
+ <class>DynamicScreen</class>
+ <widget class="QWidget" name="DynamicScreen">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -24,34 +24,6 @@
    </property>
    <property name="text">
     <string>Parse</string>
-   </property>
-  </widget>
-  <widget class="QProgressBar" name="progressBar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>700</y>
-     <width>881</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string/>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="value">
-    <number>24</number>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="format">
-    <string>%p%</string>
    </property>
   </widget>
   <widget class="QWidget" name="verticalLayoutWidget">

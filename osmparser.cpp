@@ -116,8 +116,8 @@ void OSMParser::parseOsm(double minlat, double minlon, double maxlat, double max
                     QFile(tfn).remove();
                 }
         }else{
-            for(int lat = minlat; lat<maxlat; lat++)
-                for(int lon = minlon; lon<maxlon;lon++)
+            for(double lat = minlat; lat<maxlat; lat+=TILE_STEP)
+                for(double lon = minlon; lon<maxlon;lon+=TILE_STEP)
                     emit fileParsed();
         }
     }

@@ -22,16 +22,15 @@ SOURCES += \
     asterparserdynamic.cpp \
     clickdetector.cpp \
     dynamicmapgl.cpp \
+    dynamicscreen.cpp \
     dynamictilesgenerator.cpp \
     main.cpp \
     mainwindow.cpp \
     mapgl.cpp \
-    mapoptionsscreen.cpp \
     mapscreen.cpp \
     networkdownload.cpp \
     osmparser.cpp \
     parameterswindow.cpp \
-    parsescreen.cpp \
     settingsscreen.cpp \
     tiles/GeoInfo.cpp \
     tiles/Geometry.cpp \
@@ -57,16 +56,15 @@ HEADERS += \
     asterparserdynamic.h \
     clickdetector.h \
     dynamicmapgl.h \
+    dynamicscreen.h \
     dynamictilesgenerator.h \
     mainwindow.h \
     mapgl.h \
-    mapoptionsscreen.h \
     mapscreen.h \
     networkdownload.h \
     osmparser.h \
     parameterswindow.h \
     params.h \
-    parsescreen.h \
     settingsscreen.h \
     tiles/GeoInfo.h \
     tiles/Geometry.h \
@@ -88,11 +86,10 @@ HEADERS += \
     vectortextureloader.h
 
 FORMS += \
+    dynamicscreen.ui \
     mainwindow.ui \
-    mapoptionsscreen.ui \
     mapscreen.ui \
     parameterswindow.ui \
-    parsescreen.ui \
     settingsscreen.ui
 
 # Default rules for deployment.

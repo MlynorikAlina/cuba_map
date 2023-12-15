@@ -17,8 +17,8 @@ class MapScreen : public QWidget
 
 public:
     explicit MapScreen(QWidget *parent = nullptr);
-    void setMapDynamic(QVector<QCheckBox *> checkedDist);
-    void setMapVector(QVector<QCheckBox *> checkedDist);
+    void setMapDynamic(QVector<QString> checkedDist);
+    void setMapVector(QVector<QString> checkedDist);
     ~MapScreen();
 
 public slots:
@@ -26,7 +26,7 @@ public slots:
     void zoomOut();
 private:
     QAtomicInt currentRadius;
-    QVector<QCheckBox*> checkedDist;
+    QVector<QString> checkedDist;
     QString staticMapDir;
     QString dynamicMapDir;
     DynamicMapGL* dynamicMap;

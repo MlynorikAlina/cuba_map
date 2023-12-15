@@ -48,6 +48,10 @@ void MapGL::generateGrid()
         lat_st*=10;
         lat_deg++;
     }
+    lon_st = max(lon_st, lat_st);
+    lat_st = lon_st;
+    lon_deg = max(lon_deg, lat_deg);
+    lat_deg = lon_deg;
     for(double lon = floor(b.minLon*lon_st)/lon_st; lon<= ceil(b.maxLon*lon_st)/lon_st; lon+=1./lon_st){
         lon_v_c.append({lon, b.minLat});
         lon_v_c.append({lon, b.maxLat});

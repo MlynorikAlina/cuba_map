@@ -5,19 +5,22 @@
 #include <QThread>
 #include <tiles/OverpassFilter.h>
 #include "params.h"
-
+enum UpdateMode {
+    NO_UPDATE, UPDATE_FILTER, UPDATE_ALL
+};
 
 class DynamicTilesGenerator : public QThread
 {
     Q_OBJECT
 public:
     //DynamicTilesGenerator(QString osmFile, QString textureFile, QString outPngDir, OverpassFilter *filter, int lat, int lon, int size, double frac, int prec);
-    DynamicTilesGenerator(const QString &dynamicMapDir, int size, const QVector<QCheckBox *> &checkedDist);
+    DynamicTilesGenerator(const QString &dynamicMapDir, int size, const QVector<QString> &checkedDist);
 signals:
     void tileGenerated();
 public slots:
     void startPainting();
 private:
+    UpdateMode updateMapParams(QString fileOut, OverpassFilter *filter, QString lat, QString lon);
     QString dynamicMapDir;
 
     QString textureFile;
@@ -28,7 +31,7 @@ private:
     double lon;
 
     QString svgFile = QString(STYLE_DIR) + "test.svg";
-    QVector<QCheckBox*> checkedDist;
+    QVector<QString> checkedDist;
 
     // QThread interface
 protected:

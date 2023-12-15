@@ -21,22 +21,22 @@ MapScreen::MapScreen(QWidget *parent) :
 }
 
 
-void MapScreen::setMapDynamic(QVector<QCheckBox *> checkedDist)
+void MapScreen::setMapDynamic(QVector<QString> checkedDist)
 {
     vectorMap->hide();
     dynamicMapDir + "params.txt";
     this->checkedDist = checkedDist;
     currentRadius = 0;
-    dynamicMap->setParams(checkedDist[currentRadius]->text());
+    dynamicMap->setParams(checkedDist[currentRadius]);
     dynamicMap->show();
 }
 
-void MapScreen::setMapVector(QVector<QCheckBox *> checkedDist)
+void MapScreen::setMapVector(QVector<QString> checkedDist)
 {
     dynamicMap->hide();
     this->checkedDist = checkedDist;
     currentRadius = 0;
-    vectorMap->setParams(checkedDist[currentRadius]->text());
+    vectorMap->setParams(checkedDist[currentRadius]);
     vectorMap->show();
 }
 
@@ -49,9 +49,9 @@ void MapScreen::zoomIn(){
     if(currentRadius + 1 < checkedDist.size()){
         currentRadius++;
         if(!dynamicMap->isHidden())
-            dynamicMap->setParams(checkedDist[currentRadius]->text());
+            dynamicMap->setParams(checkedDist[currentRadius]);
         if(!vectorMap->isHidden())
-            vectorMap->setParams(checkedDist[currentRadius]->text());
+            vectorMap->setParams(checkedDist[currentRadius]);
     }
 }
 
@@ -59,8 +59,8 @@ void MapScreen::zoomOut(){
     if(currentRadius - 1 >= 0){
         currentRadius--;
         if(!dynamicMap->isHidden())
-            dynamicMap->setParams(checkedDist[currentRadius]->text());
+            dynamicMap->setParams(checkedDist[currentRadius]);
         if(!vectorMap->isHidden())
-            vectorMap->setParams(checkedDist[currentRadius]->text());
+            vectorMap->setParams(checkedDist[currentRadius]);
     }
 }

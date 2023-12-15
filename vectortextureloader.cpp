@@ -9,6 +9,11 @@ VectorTextureLoader::VectorTextureLoader(const QString &textureFile, const QStri
     asterDir(asterDir), box(box)
 {}
 
+void VectorTextureLoader::load()
+{
+    this->start();
+}
+
 void VectorTextureLoader::run()
 {
     QStringList args;

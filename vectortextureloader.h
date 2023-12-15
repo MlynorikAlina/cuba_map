@@ -17,7 +17,8 @@ public:
     VectorTextureLoader(const QString &textureFile, const QString &asterDir, Bbox box);
 signals:
     void textureLoaded();
-
+public slots:
+    void load();
     // QThread interface
 protected:
     void run();

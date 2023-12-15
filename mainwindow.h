@@ -25,9 +25,10 @@ private:
 
 private slots:
     void showSettingsScreen();
-    void showParseScreen();
-    void showMapOptionsScreen();
-    void showDynamicMap(QVector<QCheckBox*> checkedDist);
-    void showVectorMap(QVector<QCheckBox*> checkedDist);
+    void showDynamicScreen();
+    void showVectorScreen();
+    void showDynamicMap(QVector<QString> checkedDist);
+    void showVectorMap(QVector<QString> checkedDist);
+    void loadVector(Params * par);
 };
 #endif // MAINWINDOW_H

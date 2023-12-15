@@ -14,6 +14,7 @@ public:
 
 signals:
     void fileDownloaded();
+    void finished();
 private:
     void downloadAster(int lat, int lon);
     static void unzipFile(const std::string &zipArchive, const std::string &fileName, const std::string &outputFile);
@@ -25,8 +26,13 @@ private:
     QString asterURL;
 
     unsigned int tf_count;
+    QAtomicInt filesTotal;
+    QAtomicInt filesCount;
     QString asterParseDir;
     QVector<int> list;
+
+private slots:
+    void checkFinished();
 public:
     void run();
 };

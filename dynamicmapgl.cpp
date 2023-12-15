@@ -112,7 +112,8 @@ void DynamicMapGL::loadTiles()
             ss.setRealNumberNotation(QTextStream::FixedNotation);
             ss.setRealNumberPrecision(prec);
             ss<<lon+180<<".png";
-            texture.push_back(new TileInfo(text,lat,lon,lat+frac,lon+frac));
+            if(QFile::exists(text))
+                texture.push_back(new TileInfo(text,lat,lon,lat+frac,lon+frac));
         }
     }
 

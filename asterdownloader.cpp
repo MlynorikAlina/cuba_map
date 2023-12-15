@@ -17,6 +17,7 @@ AsterDownloader::AsterDownloader(const QString &asterDir,
     QDir dir(asterDir);
     if (!dir.exists())
         dir.mkpath(dir.absolutePath());
+    connect(this, &AsterDownloader::fileDownloaded, this, &AsterDownloader::checkFinished);
 }
 
 void AsterDownloader::unzip(QNetworkReply *rep) {
@@ -36,6 +37,13 @@ void AsterDownloader::unzip(QNetworkReply *rep) {
     QFile::remove(s);
     emit fileDownloaded();
     delete rep;
+}
+
+void AsterDownloader::checkFinished()
+{
+    filesCount++;
+    if(filesCount==filesTotal)
+        emit finished();
 }
 
 void AsterDownloader::setList(const QVector<int> &newList) { list = newList; }
@@ -61,6 +69,8 @@ void AsterDownloader::setList(const QVector<int> &newList) { list = newList; }
 
 
 void AsterDownloader::run() {
+    filesTotal = (list[1] - list[0])*(list[3] - list[2]);
+    filesCount = 0;
     for (int lon = list[0]; lon < list[1]; lon++)
         for (int lat = list[2]; lat < list[3]; lat++) {
             downloadAster(lat, lon);

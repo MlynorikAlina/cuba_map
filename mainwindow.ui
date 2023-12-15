@@ -43,16 +43,13 @@
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
      <item>
-      <widget class="MapOptionsScreen" name="mapOptionsScreen" native="true"/>
-     </item>
-     <item>
       <widget class="MapScreen" name="mapScreen" native="true"/>
      </item>
      <item>
       <widget class="SettingsScreen" name="settingsScreen" native="true"/>
      </item>
      <item>
-      <widget class="ParseScreen" name="parseScreen" native="true"/>
+      <widget class="DynamicScreen" name="dynamicScreen" native="true"/>
      </item>
     </layout>
    </widget>
@@ -71,7 +68,7 @@
    </property>
    <widget class="QMenu" name="menumenu">
     <property name="title">
-     <string>menu</string>
+     <string>mode</string>
     </property>
     <addaction name="actiondynamic_map"/>
     <addaction name="actionvector_map"/>
@@ -84,27 +81,6 @@
     <bool>false</bool>
    </property>
   </widget>
-  <action name="actiondownload_osm">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>download osm</string>
-   </property>
-  </action>
-  <action name="actionparse_osm">
-   <property name="text">
-    <string>parse osm</string>
-   </property>
-  </action>
-  <action name="actionset_map_options">
-   <property name="text">
-    <string>set map options</string>
-   </property>
-  </action>
   <action name="actionsettings">
    <property name="text">
     <string>settings</string>
@@ -123,18 +99,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ParseScreen</class>
-   <extends>QWidget</extends>
-   <header>parsescreen.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>MapOptionsScreen</class>
-   <extends>QWidget</extends>
-   <header>mapoptionsscreen.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>MapScreen</class>
    <extends>QWidget</extends>
    <header>mapscreen.h</header>
@@ -144,6 +108,12 @@
    <class>SettingsScreen</class>
    <extends>QWidget</extends>
    <header>settingsscreen.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DynamicScreen</class>
+   <extends>QWidget</extends>
+   <header>dynamicscreen.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
