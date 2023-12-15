@@ -25,6 +25,9 @@ DynamicScreen::DynamicScreen(QWidget *parent)
     tileSelector = new TilesSelector;
     ui->verticalLayout->addWidget(tileSelector);
     tileSelector->setFocusPolicy(Qt::StrongFocus);
+    QDir dir(DYNAMIC_MAP_DIR);
+    if(!dir.exists())
+        dir.mkpath(DYNAMIC_MAP_DIR);
 }
 
 DynamicScreen::~DynamicScreen() { delete ui; }
