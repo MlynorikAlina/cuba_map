@@ -23,5 +23,6 @@ int main(int argc, char *argv[])
     //w.setMaximumHeight(901);
     //w.setMinimumHeight(900);
     w.show();
+    w.setWindowTitle(" ");
     return a.exec();
 }

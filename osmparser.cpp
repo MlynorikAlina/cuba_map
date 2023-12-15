@@ -8,7 +8,6 @@
 #include "params.h"
 
 
-
 OSMParser::OSMParser(const QString &osmDir, const QString &pbfDirName) : osmDir(osmDir),
     pbfDirName(pbfDirName)
 {
@@ -34,7 +33,7 @@ void OSMParser::run()
             QTextStream s(&n);
             s << "planet/" << i + 90 << "_" << j + 180 << ".osm.pbf";
             parseOsm(max(list[2],i), max(list[0],j), min(list[3],i+PLANET_TILES_STEP), min(list[1],j+PLANET_TILES_STEP), n);
-            __TIME__
+            //__TIME__
     }
     dir.rmdir(dir.absolutePath());
 }
@@ -117,8 +116,9 @@ void OSMParser::parseOsm(double minlat, double minlon, double maxlat, double max
                 }
         }else{
             for(double lat = minlat; lat<maxlat; lat+=TILE_STEP)
-                for(double lon = minlon; lon<maxlon;lon+=TILE_STEP)
+                for(double lon = minlon; lon<maxlon;lon+=TILE_STEP){
                     emit fileParsed();
+                }
         }
     }
 }

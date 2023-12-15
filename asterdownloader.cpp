@@ -10,7 +10,6 @@
 #include <networkdownload.h>
 #include <qprocess.h>
 
-#define TILE_SIZE 900
 AsterDownloader::AsterDownloader(const QString &asterDir,
                          const QString &asterURL)
     : nw_manager(this), asterDir(asterDir), asterURL(asterURL) {
@@ -75,6 +74,7 @@ void AsterDownloader::run() {
         for (int lat = list[2]; lat < list[3]; lat++) {
             downloadAster(lat, lon);
         }
+
 }
 
 void AsterDownloader::downloadAster(int lat, int lon) {
@@ -107,8 +107,9 @@ void AsterDownloader::downloadAster(int lat, int lon) {
             NetworkDownload::closeConnection(rep);
             unzip(rep);
         });
-    } else
+    } else{
         emit fileDownloaded();
+    }
 }
 
 zip_uint64_t BUF_SIZE = 1024;

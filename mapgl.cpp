@@ -108,7 +108,7 @@ void MapGL::resizeGL(int w, int h)
     glViewport(0,0,w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(b.minLon, b.maxLon, b.minLat, b.maxLat, -1.0, 1.0);
+    glOrtho(b.minLon, b.maxLon, b.minLat, b.maxLat, -10.0, -1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }

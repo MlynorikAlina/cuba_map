@@ -26,6 +26,7 @@ private:
     QString osmDir;
     QVector<int> list;
     QString pbfDirName;
+
 };
 
 #endif // OSMPARSER_H

@@ -4,6 +4,7 @@
 #include <QRegExpValidator>
 #include "params.h"
 
+
 ParametersWindow::ParametersWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ParametersWindow)
@@ -86,6 +87,7 @@ void ParametersWindow::updProgress()
 
 void ParametersWindow::finishProgress()
 {
+    __TIME__
     ui->progressBar->hide();
     ui->cancelButton->show();
     ui->okButton->show();

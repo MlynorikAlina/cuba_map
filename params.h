@@ -5,6 +5,7 @@
 #include <QList>
 #include <QString>
 #include "tiles/MapFeatures.h"
+#include <QDebug>
 using namespace map_features;
 
 static time_t stime = time(NULL);
@@ -51,7 +52,7 @@ static time_t stime = time(NULL);
 #define PLANET_TILES_STEP 5
 #define TEXT_SIZE 12
 #define GRID_COLOR 0x96,0x96,0x96
-#define DEFAULT_TILE_SIZE 900
+#define DEFAULT_TILE_SIZE 450
 
 static QHash<QString, int> dynamicTilesPrec = {{"100", 0},
                                         {"50", 1}};

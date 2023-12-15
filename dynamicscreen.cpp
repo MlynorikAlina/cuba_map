@@ -38,6 +38,7 @@ void DynamicScreen::setParametersWindow(ParametersWindow *newP)
 }
 
 void DynamicScreen::parseFiles(QVector<int> borders) {
+    __TIME__
     QDir d(OSM_DIR);
     if(!d.exists())
         d.mkpath(d.absolutePath());
@@ -71,12 +72,14 @@ void DynamicScreen::loadDynamic(Params * par)
         int maxLat = std::max(box.coords[1], box.coords[7]);
         int minLon = std::min(box.coords[0], box.coords[2]);
         int maxLon = std::max(box.coords[0], box.coords[2]);
+        b.setBox(minLat,minLon, maxLat, maxLon);
 
         QVector<int> l = {minLon, maxLon, minLat, maxLat};
 
         int osmCount=(l[3]-l[2])*(l[1]-l[0]);
-        filesToLoadTotal = (1+par->checkedDist.size() + 1/(TILE_STEP*TILE_STEP)) * osmCount;
+        filesToLoadTotal = (1+(par->checkedDist.size() + 1)/(TILE_STEP*TILE_STEP)) * osmCount;
         filesToLoad = 0;
+        qDebug()<<"total:"<<filesToLoadTotal;
         p->setProgressRange(0,filesToLoadTotal);
         parseFiles(l);
     }
@@ -96,13 +99,15 @@ void DynamicScreen::generateTiles() {
 
         DynamicTilesGenerator* tg = new DynamicTilesGenerator(DYNAMIC_MAP_DIR, DEFAULT_TILE_SIZE, par->checkedDist);
         connect(tg, &DynamicTilesGenerator::tileGenerated, this, &DynamicScreen::fileLoad);
+        tg->setBorder(b);
         tg->start();
     }
 }
 
 void DynamicScreen::fileLoad()
 {
-    p->updProgress(++filesToLoad);
+    p->updProgress();
+    //qDebug()<<++filesToLoad;
 }
 
 void DynamicScreen::startGeneratingTiles()

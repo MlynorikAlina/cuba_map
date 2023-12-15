@@ -31,7 +31,7 @@ private:
     Params * par;
     void parseFiles(QVector<int> borders);
     void generateTiles();
-
+    Bbox b;
 private slots:
     void loadDynamic(Params * p);
     void fileLoad();

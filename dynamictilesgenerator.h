@@ -15,6 +15,11 @@ class DynamicTilesGenerator : public QThread
 public:
     //DynamicTilesGenerator(QString osmFile, QString textureFile, QString outPngDir, OverpassFilter *filter, int lat, int lon, int size, double frac, int prec);
     DynamicTilesGenerator(const QString &dynamicMapDir, int size, const QVector<QString> &checkedDist);
+
+
+
+    void setBorder(const Bbox &newB);
+
 signals:
     void tileGenerated();
 public slots:
@@ -32,7 +37,7 @@ private:
 
     QString svgFile = QString(STYLE_DIR) + "test.svg";
     QVector<QString> checkedDist;
-
+    Bbox b;
     // QThread interface
 protected:
     void run();
