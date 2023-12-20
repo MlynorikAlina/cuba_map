@@ -179,6 +179,7 @@ void MainWindow::loadStatic(Params *par)
         QFile f(STATIC_MAP_PARAMS_FILE);
         bool same = false;
         QString prevStyle;
+        QString style = SettingsScreen::getStatStyle();
         if(f.exists()){
             f.open(QFile::ReadOnly);
             QTextStream ss(&f);
@@ -189,10 +190,11 @@ void MainWindow::loadStatic(Params *par)
             f.close();
             same = (sl[0] == par->c_lat && sl[1] == par->c_lon && (dist == par->checkedDist[0] ||dist.toDouble() > par->checkedDist[0].toDouble()));
         }
-        if(!same && f.open(QFile::WriteOnly)){
+        bool tilesSame = same && (SettingsScreen::getStatStyle()==prevStyle);
+        if(!tilesSame && f.open(QFile::WriteOnly)){
             QTextStream ss(&f);
             ss<<par->c_lat<<" "<<par->c_lon<<Qt::endl;
-            ss<<SettingsScreen::getStatStyle()<<Qt::endl;
+            ss<<style<<Qt::endl;
             ss<<OSM_DIR<<endl;
             ss<<par->checkedDist[0];
             f.close();
@@ -201,8 +203,7 @@ void MainWindow::loadStatic(Params *par)
         StaticOsmLoader * ol = new StaticOsmLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
         AsterDownloader* asterParser  = new AsterDownloader(ASTER_DIR, ASTER_URL);
 
-        bool tilesSame = same && (SettingsScreen::getStatStyle()==prevStyle);
-        StaticTilesGenerator* tg = new StaticTilesGenerator(par->c_lat.toDouble(), par->c_lon.toDouble(),STATIC_TILE_SIZE, par->checkedDist, tilesSame);
+        StaticTilesGenerator* tg = new StaticTilesGenerator(par->c_lat.toDouble(), par->c_lon.toDouble(),STATIC_TILE_SIZE, par->checkedDist, tilesSame, style);
 
         connect(tg, &StaticTilesGenerator::finished, p, &ParametersWindow::finishProgress);
 

@@ -12,8 +12,10 @@ class StaticMapGL: public MapGL
 
 public:
     StaticMapGL();
+    ~StaticMapGL();
     void setParams(const QString &par);
     void loadParams();
+
 
 protected:
     void paintGL();

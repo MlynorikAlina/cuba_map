@@ -9,6 +9,11 @@ StaticMapGL::StaticMapGL():
 {
 }
 
+StaticMapGL::~StaticMapGL()
+{
+    makeCurrent();
+}
+
 void StaticMapGL::setParams(const QString &par)
 {
     dist = par;

@@ -3,6 +3,7 @@
 #include "params.h"
 #include "tiles/GeoInfo.h"
 
+#include <QDir>
 #include <qfile.h>
 #include <qprocess.h>
 #include <settingsscreen.h>
@@ -11,8 +12,8 @@
 
 
 
-StaticTilesGenerator::StaticTilesGenerator(double lat, double lon, int size, const QVector<QString> &checkedDist, bool same):
-    checkedDist(checkedDist), lat(lat), lon(lon), size(size), same(same)
+StaticTilesGenerator::StaticTilesGenerator(double lat, double lon, int size, const QVector<QString> &checkedDist, bool same, QString style):
+    checkedDist(checkedDist), lat(lat), lon(lon), size(size), same(same), style(style)
 {
 
 }
@@ -25,6 +26,12 @@ void StaticTilesGenerator::load()
 void StaticTilesGenerator::run()
 {
     __TIME__
+    if(!same){
+        QDir dir(STATIC_MAP_DIR);
+        dir.removeRecursively();
+        dir.mkpath("./");
+    }
+
     for(auto dist:checkedDist){
         if(!same||!QFile::exists(STATIC_MAP_DIR + dist + ".png")){
             OverpassFilter *filter = SettingsScreen::getFilter(dist.toInt());
@@ -46,7 +53,7 @@ void StaticTilesGenerator::run()
             qDebug()<<proc->readAllStandardError();
             qDebug()<<proc->readAllStandardOutput();
 
-            OSMToSVGConverter cv(TMP_STAT_OSM, TMP_STAT_TEXTURE, *filter, string(STYLE_DIR) + "test.svg", SettingsScreen::getStatStyle().toStdString(), border, size, size);
+            OSMToSVGConverter cv(TMP_STAT_OSM, TMP_STAT_TEXTURE, *filter, string(STYLE_DIR) + "test.svg", style.toStdString(), border, size, size);
             cv.draw(PATTERNS_FILE, 1);
             SVGToPNGConverter png(size, size);
             png.convert(string(STYLE_DIR) + "test.svg", STATIC_MAP_DIR, dist.toStdString() + ".png");

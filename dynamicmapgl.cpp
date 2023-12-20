@@ -15,6 +15,11 @@ DynamicMapGL::DynamicMapGL(QString params):
     paramsFile = params;
 }
 
+DynamicMapGL::~DynamicMapGL()
+{
+
+}
+
 void DynamicMapGL::paintGL()
 {
     glLoadIdentity();
@@ -168,5 +173,6 @@ bool TileInfo::defined()
 
 TileInfo::~TileInfo()
 {
-    delete texture;
+    if(texture!=NULL)
+        delete texture;
 }
