@@ -66,15 +66,16 @@ def getFileName(lat,lon):
 def parseAster(asterDir, outFile, SIZE, lonMin, latMin, lonMax, latMax):
     zeros = np.zeros((SIZE,SIZE))
     tex = None
-    for i in range(latMin,latMax+1):
+    for i in range(math.floor(latMax), math.floor(latMin)-1, -1):
         line = None
-        for j in range(lonMin,lonMax+1):
+        for j in range(math.floor(lonMin),math.floor(lonMax)+1):
             fn = asterDir + getFileName(i,j)
             texture = zeros
             if os.path.exists(fn):
                 print(fn)
                 with rasterio.open(fn) as dataset:
                     img, transform = processResampled(dataset, SIZE)
+                    print(str(transform))
                     texture = np.where(img>0,1,MASK_VALUE).astype(np.float32)
                     #print(texture.shape)
             
@@ -86,15 +87,18 @@ def parseAster(asterDir, outFile, SIZE, lonMin, latMin, lonMax, latMax):
         if tex is None:
             tex = line
         else:
-            tex = np.concatenate((line,tex),axis=0)
+            tex = np.concatenate((tex,line),axis=0)
         print(tex.shape)
 
     imgMask = np.ma.masked_array(tex, mask=(tex != MASK_VALUE))
     print(imgMask.shape)
     f = open(outFile,'w')
     
-    geotransform = (lonMin, 1./ SIZE, 0., latMax+1,  0., -1./SIZE)
+    print(tex.shape)
+    h, w = tex.shape
+    geotransform = (math.floor(lonMin), (math.floor(lonMax)+1. - math.floor(lonMin))/ w, 0., math.floor(latMax)+1,  0., (math.floor(latMin)-1. - math.floor(latMax))/h)
     transform = Affine.from_gdal(*geotransform)
+    print(transform)
     for geom, val in rasterio.features.shapes(tex, transform=transform, mask=imgMask.mask):
         f.write('{\"coordinates\" : ' + str(
                 [[x for x in el] for el in geom['coordinates'][0]]) + '}\n')
@@ -102,4 +106,4 @@ def parseAster(asterDir, outFile, SIZE, lonMin, latMin, lonMax, latMax):
     f.close()
 
 
-parseAster(sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]))
+parseAster(sys.argv[1], sys.argv[2], int(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]), float(sys.argv[7]))

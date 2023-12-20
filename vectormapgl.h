@@ -46,11 +46,12 @@ protected:
     void paintGL();
     void mousePressEvent(QMouseEvent *event);
 private:
-
+    void updateStyle();
 
     OSMParser parser;
     QString dist;
     QString osmFileDir;
+    QString style;
     map<string,WayData> wayTags;
 
     Bbox prev;

@@ -32,9 +32,6 @@ void DynamicTilesGenerator::run()
 
         UpdateMode mode = updateMapParams(dynamicMapDir+e+"_p.txt", filter, "0","0");
 
-
-
-
         double frac = min(TILE_STEP, dynamicTilesSize[e].toDouble());
         int tsize = round(size*TILE_STEP/frac);
         QString tempAster = PARSED_ASTER + e + "/";
@@ -93,7 +90,7 @@ void DynamicTilesGenerator::run()
                             if(cv==NULL){
                                 Bbox b;
                                 b.setBox(lat - 90, lon - 180, lat+TILE_STEP - 90, lon+TILE_STEP - 180);
-                                cv = new OSMToSVGConverter(fp.toStdString(), coords.toStdString(), *filter, svgFile.toStdString(), STYLE_SVG, b, tsize, tsize);
+                                cv = new OSMToSVGConverter(fp.toStdString(), coords.toStdString(), *filter, svgFile.toStdString(), style.toStdString(), b, tsize, tsize);
                                 cv->draw(PATTERNS_FILE, 1);
                             }
                             png.setShift(shiftx, shifty);
@@ -117,6 +114,7 @@ UpdateMode DynamicTilesGenerator::updateMapParams(QString fileOut,
         file.close();
         file.open(QIODevice::WriteOnly);
         QTextStream s(&file);
+        s << style << Qt::endl;
         s << lat << Qt::endl;
         s << lon;
         for (auto e : filter->getIncludedFeatures())
@@ -124,6 +122,7 @@ UpdateMode DynamicTilesGenerator::updateMapParams(QString fileOut,
         needUpd = UpdateMode::UPDATE_ALL;
     } else {
         QTextStream in(&file);
+        QString prevStyle = in.readLine();
         QString tlat = in.readLine();
         QString tlon = in.readLine();
         set<mf::MapFeature> includes;
@@ -135,10 +134,11 @@ UpdateMode DynamicTilesGenerator::updateMapParams(QString fileOut,
         }
         bool diffrent_center = tlat.compare(lat) != 0 ||
                                tlon.compare(lon) != 0;
-        if (diffrent_center || !filterSame) {
+        if (diffrent_center || !filterSame || prevStyle!=style) {
             file.close();
             file.open(QIODevice::WriteOnly);
             QTextStream s(&file);
+            s << style << Qt::endl;
             if (diffrent_center) {
                 s << lat << Qt::endl;
                 s << lon;
@@ -163,8 +163,9 @@ void DynamicTilesGenerator::setBorder(const Bbox &newB)
 }
 
 
-DynamicTilesGenerator::DynamicTilesGenerator(const QString &dynamicMapDir, int size, const QVector<QString> &checkedDist) :
+DynamicTilesGenerator::DynamicTilesGenerator(const QString &dynamicMapDir, int size, QString style, const QVector<QString> &checkedDist) :
     dynamicMapDir(dynamicMapDir),
     size(size),
+    style(style),
     checkedDist(checkedDist)
 {}

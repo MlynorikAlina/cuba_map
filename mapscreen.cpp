@@ -10,12 +10,15 @@ MapScreen::MapScreen(QWidget *parent) :
     ui->setupUi(this);
     dynamicMapDir = DYNAMIC_MAP_DIR;
     dynamicMap = new DynamicMapGL(dynamicMapDir + "params.txt");
-    vectorMap = new VectorMapGL();
+    vectorMap = new VectorMapGL;
+    staticMap = new StaticMapGL;
     int h = ui->verticalLayoutWidget->height();
     vectorMap->setMinimumHeight(h);
     dynamicMap->setMinimumHeight(h);
+    staticMap->setMinimumHeight(h);
     ui->verticalLayout->addWidget(dynamicMap);
     ui->verticalLayout->addWidget(vectorMap);
+    ui->verticalLayout->addWidget(staticMap);
 
     dynamicMap->setFocusPolicy(Qt::StrongFocus);
 }
@@ -24,6 +27,7 @@ MapScreen::MapScreen(QWidget *parent) :
 void MapScreen::setMapDynamic(QVector<QString> checkedDist)
 {
     vectorMap->hide();
+    staticMap->hide();
     dynamicMapDir + "params.txt";
     this->checkedDist = checkedDist;
     currentRadius = 0;
@@ -34,10 +38,21 @@ void MapScreen::setMapDynamic(QVector<QString> checkedDist)
 void MapScreen::setMapVector(QVector<QString> checkedDist)
 {
     dynamicMap->hide();
+    staticMap->hide();
     this->checkedDist = checkedDist;
     currentRadius = 0;
     vectorMap->setParams(checkedDist[currentRadius]);
     vectorMap->show();
+}
+
+void MapScreen::setMapStatic(QVector<QString> checkedDist)
+{
+    dynamicMap->hide();
+    vectorMap->hide();
+    this->checkedDist = checkedDist;
+    currentRadius = 0;
+    staticMap->setParams(checkedDist[currentRadius]);
+    staticMap->show();
 }
 
 MapScreen::~MapScreen()
@@ -52,6 +67,8 @@ void MapScreen::zoomIn(){
             dynamicMap->setParams(checkedDist[currentRadius]);
         if(!vectorMap->isHidden())
             vectorMap->setParams(checkedDist[currentRadius]);
+        if(!staticMap->isHidden())
+            staticMap->setParams(checkedDist[currentRadius]);
     }
 }
 
@@ -62,5 +79,7 @@ void MapScreen::zoomOut(){
             dynamicMap->setParams(checkedDist[currentRadius]);
         if(!vectorMap->isHidden())
             vectorMap->setParams(checkedDist[currentRadius]);
+        if(!staticMap->isHidden())
+            staticMap->setParams(checkedDist[currentRadius]);
     }
 }

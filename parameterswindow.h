@@ -8,12 +8,16 @@ namespace Ui {
 class ParametersWindow;
 }
 
+enum Mode{
+    STATIC, DYNAMIC, VECTOR
+};
 struct Params{
     QVector<QString> checkedDist;
     QString c_lat;
     QString c_lon;
-    bool isDynamicParams;
+    Mode mode;
 };
+
 
 class ParametersWindow : public QWidget
 {
@@ -24,6 +28,7 @@ public:
     ~ParametersWindow();
     void setDynamicParams();
     void setVectorParams();
+    void setStaticParams();
     void setProgressRange(int min, int max);
     void updProgress(int val);
     void updProgress();
@@ -31,11 +36,12 @@ signals:
     void parametersLoaded(Params* p);
     void showDynamic(QVector<QString> checkedDist);
     void showVector(QVector<QString> checkedDist);
+    void showStatic(QVector<QString> checkedDist);
 public slots:
     void finishProgress();
 private: 
     Ui::ParametersWindow *ui;
-    bool isDynamicParams;
+    Mode mode;
     Params* p;
 private slots:
     void getParams();

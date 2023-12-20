@@ -10,8 +10,9 @@ ParametersWindow::ParametersWindow(QWidget *parent) :
     ui(new Ui::ParametersWindow)
 {
     ui->setupUi(this);
-    ui->latEdit->setText("21.7212");
-    ui->lonEdit->setText("-77.6429");
+    ui->latEdit->setText("23.01373");
+    ui->lonEdit->setText("-82.2425");
+
 
     QRegExpValidator *validatorLat =
         new QRegExpValidator(QRegExp("^-?(90.0)|((([0-8]\\d)|\\d)\\.\\d{6})$"));
@@ -28,6 +29,8 @@ ParametersWindow::ParametersWindow(QWidget *parent) :
     connect(ui->okButton, &QPushButton::clicked, this, &ParametersWindow::getParams);
 }
 
+
+
 ParametersWindow::~ParametersWindow()
 {
     delete ui;
@@ -35,7 +38,7 @@ ParametersWindow::~ParametersWindow()
 
 void ParametersWindow::setDynamicParams()
 {
-    isDynamicParams = true;
+    mode = DYNAMIC;
 
     for (auto e : ui->distance->findChildren<QCheckBox*>())
         e->setCheckState(Qt::Unchecked);
@@ -54,7 +57,7 @@ void ParametersWindow::setDynamicParams()
 
 void ParametersWindow::setVectorParams()
 {
-    isDynamicParams = false;
+    mode = VECTOR;
 
     for (auto e : ui->distance->findChildren<QCheckBox*>())
         e->setCheckState(Qt::Unchecked);
@@ -69,6 +72,25 @@ void ParametersWindow::setVectorParams()
     ui->cb_050->hide();
     ui->cb_070->hide();
     ui->cb_100->hide();
+}
+
+void ParametersWindow::setStaticParams()
+{
+    mode = STATIC;
+
+    for (auto e : ui->distance->findChildren<QCheckBox*>())
+        e->setCheckState(Qt::Unchecked);
+
+    ui->cb_001->hide();
+    ui->cb_002->hide();
+    ui->cb_005->hide();
+    ui->cb_020->show();
+    ui->cb_025->show();
+    ui->cb_035->show();
+    ui->cb_050->show();
+    ui->cb_070->show();
+    ui->cb_100->show();
+    ui->cb_100->setCheckState(Qt::Checked);
 }
 
 void ParametersWindow::setProgressRange(int min, int max)
@@ -92,10 +114,17 @@ void ParametersWindow::finishProgress()
     ui->cancelButton->show();
     ui->okButton->show();
     this->hide();
-    if(isDynamicParams)
+    switch(mode){
+    case DYNAMIC:
         emit showDynamic(p->checkedDist);
-    else
+        break;
+    case VECTOR:
         emit showVector(p->checkedDist);
+        break;
+    case STATIC:
+        emit showStatic(p->checkedDist);
+        break;
+    }
 }
 
 void ParametersWindow::updProgress(int val)
@@ -115,7 +144,7 @@ void ParametersWindow::getParams()
             p->checkedDist.push_back(e->text());
         }
     }
-    p->isDynamicParams = isDynamicParams;
+    p->mode = mode;
     p->c_lat = ui->latEdit->text();
     p->c_lon = ui->lonEdit->text();
     emit parametersLoaded(p);

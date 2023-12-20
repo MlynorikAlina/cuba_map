@@ -1,4 +1,5 @@
 #include "vectormapgl.h"
+#include "settingsscreen.h"
 #include "tiles/GeoInfo.h"
 
 #include "params.h"
@@ -18,39 +19,9 @@
 
 VectorMapGL::VectorMapGL():  parser(OverpassFilter())
 {
-    QString val;
-    QFile file;
-    file.setFileName(VEC_STYLE);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    val = file.readAll();
-    file.close();
-
-    QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
-    QJsonObject json = doc.object();
-
-    QHash<QString, QVariant> m = json.toVariantHash();
-    QHashIterator<QString, QVariant> it = m;
-    while(it.hasNext()){
-        it.next();
-        QStringList features = it.key().split(' ');
-        QJsonObject prop = it.value().toJsonObject();
-        uint8_t* color = NULL;
-        uint8_t stroke = prop["stroke"].toInt(0);
-        if(prop.contains("fill")){
-            color = new uint8_t[3];
-            QJsonArray arr = prop["fill"].toArray();
-            for(int i=0;i<3;i++)
-                color[i] = arr[i].toString().toInt(nullptr, 16);
-        }
-        for(auto f:features){
-            if(color!=NULL)
-                style_color.insert(f,color);
-            if(stroke!=0)
-                style_stroke.insert(f, stroke);
-        }
-    }
+    style = SettingsScreen::getVecStyle();
+    updateStyle();
     prev.setBox(181, 361, -1, -1);
-
 }
 
 
@@ -114,6 +85,42 @@ void VectorMapGL::mousePressEvent(QMouseEvent *event)
     update();
 }
 
+void VectorMapGL::updateStyle()
+{
+    QString val;
+    QFile file(style);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject json = doc.object();
+
+    style_color.clear();
+    style_stroke.clear();
+    QHash<QString, QVariant> m = json.toVariantHash();
+    QHashIterator<QString, QVariant> it = m;
+    while(it.hasNext()){
+        it.next();
+        QStringList features = it.key().split(' ');
+        QJsonObject prop = it.value().toJsonObject();
+        uint8_t* color = NULL;
+        uint8_t stroke = prop["stroke"].toInt(0);
+        if(prop.contains("fill")){
+            color = new uint8_t[3];
+            QJsonArray arr = prop["fill"].toArray();
+            for(int i=0;i<3;i++)
+                color[i] = arr[i].toString().toInt(nullptr, 16);
+        }
+        for(auto f:features){
+            if(color!=NULL)
+                style_color.insert(f,color);
+            if(stroke!=0)
+                style_stroke.insert(f, stroke);
+        }
+    }
+}
+
 
 
 void VectorMapGL::setBounds()
@@ -155,7 +162,7 @@ void VectorMapGL::loadData()
     parser.setOsmFile(TMP_VEC_OSM);
     parser.appendNodes(nodes);
     parser.appendWays(ways, nodes);
-    loadTexture( TMP_VEC_TEXTURE);
+    loadTexture(TMP_VEC_TEXTURE);
 
     ways.sort(wc());
 
@@ -239,6 +246,11 @@ void VectorMapGL::loadTexture(QString file)
 void VectorMapGL::setParams(const QString &par)
 {
     dist = par;
+    QString newStyle = SettingsScreen::getVecStyle();
+    if(newStyle!=style){
+        style = newStyle;
+        updateStyle();
+    }
     makeCurrent();
     loadParams();
     resizeGL(width(), height());

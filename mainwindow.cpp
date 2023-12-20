@@ -5,8 +5,10 @@
 #include <QAction>
 #include <asterdownloader.h>
 #include <cmath>
+#include <staticosmloader.h>
 #include <vectorosmloader.h>
-#include <vectortextureloader.h>
+#include <textureloader.h>
+#include <statictilesgenerator.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionsettings,&QAction::triggered, this, &MainWindow::showSettingsScreen);
     connect(ui->actiondynamic_map,&QAction::triggered, this, &MainWindow::showDynamicScreen);
     connect(ui->actionvector_map,&QAction::triggered, this, &MainWindow::showVectorScreen);
+    connect(ui->actionstatic_map,&QAction::triggered, this, &MainWindow::showStaticScreen);
+
 
     connect(zoomIn, &QAction::triggered, ui->mapScreen, &MapScreen::zoomIn);
     connect(zoomOut, &QAction::triggered, ui->mapScreen, &MapScreen::zoomOut);
@@ -31,7 +35,9 @@ MainWindow::MainWindow(QWidget *parent)
     p = new ParametersWindow(this);
     connect(p, &ParametersWindow::showDynamic, this,  &MainWindow::showDynamicMap);
     connect(p, &ParametersWindow::showVector, this,  &MainWindow::showVectorMap);
+    connect(p, &ParametersWindow::showStatic, this,  &MainWindow::showStaticMap);
     connect(p, &ParametersWindow::parametersLoaded, this, &MainWindow::loadVector);
+    connect(p, &ParametersWindow::parametersLoaded, this, &MainWindow::loadStatic);
 
     ui->dynamicScreen->setParametersWindow(p);
     p->setWindowFlags(Qt::Window|Qt::WindowStaysOnTopHint);
@@ -74,6 +80,15 @@ void MainWindow::showVectorScreen()
     ui->settingsScreen->hide();
     mapOptions->menuAction()->setVisible(false);
 }
+void MainWindow::showStaticScreen()
+{
+    p->show();
+    p->setStaticParams();
+    ui->dynamicScreen->hide();
+    ui->mapScreen->hide();
+    ui->settingsScreen->hide();
+    mapOptions->menuAction()->setVisible(false);
+}
 
 void MainWindow::showDynamicMap(QVector<QString> checkedDist)
 {
@@ -95,9 +110,19 @@ void MainWindow::showVectorMap(QVector<QString> checkedDist)
     p->hide();
 }
 
+void MainWindow::showStaticMap(QVector<QString> checkedDist)
+{
+    mapOptions->menuAction()->setVisible(true);
+    ui->mapScreen->show();
+    ui->mapScreen->setMapStatic(checkedDist);
+    ui->dynamicScreen->hide();
+    ui->settingsScreen->hide();
+    p->hide();
+}
+
 void MainWindow::loadVector(Params * par)
 {
-    if (!par->isDynamicParams && par->checkedDist.size() > 0) {
+    if (par->mode == VECTOR && par->checkedDist.size() > 0) {
 
         __TIME__
 
@@ -128,18 +153,69 @@ void MainWindow::loadVector(Params * par)
 
             VectorOsmLoader * ol = new VectorOsmLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
             AsterDownloader* asterParser  = new AsterDownloader(ASTER_DIR, ASTER_URL);
-            VectorTextureLoader * tl = new VectorTextureLoader(TMP_VEC_TEXTURE,ASTER_DIR, ol->getBox());
-            connect(tl, &VectorTextureLoader::finished, ol, &VectorOsmLoader::load);
+            TextureLoader * tl = new TextureLoader(TMP_VEC_TEXTURE,ASTER_DIR, ol->getBox());
+            connect(tl, &TextureLoader::finished, ol, &VectorOsmLoader::load);
             connect(ol, &VectorOsmLoader::finished, p, &ParametersWindow::finishProgress);
 
             Bbox box =  ol->getBox();
             QVector<int> borders = {int(floor(box.minLon)), int(ceil(box.maxLon)), int(floor(box.minLat)), int(ceil(box.maxLat))};
             asterParser->setList(borders);
-            connect(asterParser, &AsterDownloader::finished, tl, &VectorTextureLoader::load);
+            connect(asterParser, &AsterDownloader::finished, tl, &TextureLoader::load);
 
             asterParser->run();
         }
         else p->finishProgress();
+    }
+}
+
+void MainWindow::loadStatic(Params *par)
+{
+    if (par->mode==STATIC && par->checkedDist.size() > 0) {
+
+        __TIME__
+        p->setProgressRange(0,0);
+        p->updProgress(-1);
+
+        QFile f(STATIC_MAP_PARAMS_FILE);
+        bool same = false;
+        QString prevStyle;
+        if(f.exists()){
+            f.open(QFile::ReadOnly);
+            QTextStream ss(&f);
+            QStringList sl = ss.readLine().split(" ");
+            prevStyle = ss.readLine();
+            QString dist = ss.readLine();
+            dist = ss.readLine();
+            f.close();
+            same = (sl[0] == par->c_lat && sl[1] == par->c_lon && (dist == par->checkedDist[0] ||dist.toDouble() > par->checkedDist[0].toDouble()));
+        }
+        if(!same && f.open(QFile::WriteOnly)){
+            QTextStream ss(&f);
+            ss<<par->c_lat<<" "<<par->c_lon<<Qt::endl;
+            ss<<SettingsScreen::getStatStyle()<<Qt::endl;
+            ss<<OSM_DIR<<endl;
+            ss<<par->checkedDist[0];
+            f.close();
+        }
+
+        StaticOsmLoader * ol = new StaticOsmLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
+        AsterDownloader* asterParser  = new AsterDownloader(ASTER_DIR, ASTER_URL);
+
+        bool tilesSame = same && (SettingsScreen::getStatStyle()==prevStyle);
+        StaticTilesGenerator* tg = new StaticTilesGenerator(par->c_lat.toDouble(), par->c_lon.toDouble(),STATIC_TILE_SIZE, par->checkedDist, tilesSame);
+
+        connect(tg, &StaticTilesGenerator::finished, p, &ParametersWindow::finishProgress);
+
+        Bbox box =  ol->getBox();
+        QVector<int> borders = {int(floor(box.minLon)), int(ceil(box.maxLon)), int(floor(box.minLat)), int(ceil(box.maxLat))};
+        asterParser->setList(borders);
+        if(!same){
+            connect(asterParser, &AsterDownloader::finished, ol, &StaticOsmLoader::load);
+            connect(ol, &StaticOsmLoader::finished, tg, &StaticTilesGenerator::load);
+        }else{
+            connect(asterParser, &AsterDownloader::finished, tg, &StaticTilesGenerator::load);
+        }
+        asterParser->run();
     }
 }
 

@@ -1,0 +1,105 @@
+.osm, .landuse-basin, .natural-water, .leisure-swimming_pool,
+.natural-bay, .natural-strait, .waterway-riverbank, .waterway-dock, .landuse-salt_pond {
+    fill:  #a1f7ff;
+}
+polyline[class*='natural-coastline']{
+    fill: #dcdcdc;
+}
+
+.aeroway-apron, .aeroway-terminal, .landuse-residential, .landuse-religious, .natral-scree, .landuse-commercial, .landuse-retail, .man_made-bridge, .landuse-quarry , polyline[class*="amenity-"] {
+    fill: #a9a9a9;
+} 
+
+.landuse-industrial, .man_made-wastewater_plant, .man_made-water_works, .landuse-railway, ..power-generator, .power-plant, .power-substation {
+    fill: #e6d0e2;
+}
+
+.landuse-military, .military-danger_area{
+    fill:#f6c1bd;
+}
+
+.landuse-farmland, .landuse-greenhouse_horticulture, .natural-heath, .landuse-farmyard {
+    fill: #d7d9a2;
+}
+
+.landuse-meadow, .landuse-grass, .landuse-recreation_ground, .landuse-village_green, .natural-grassland, .leisure-park, .landuse-allotments,
+.grave_yard, .landuse-cemetery, .leisure-pitch, .landuse-forest, .natural-wood, 
+.natural-tree, .landuse-orchard,.landuse-plant_nursery,.landuse-vineyard,.leisure-garden, .natural-scrub {
+    fill: #ceebb3;
+}
+
+.landuse-landfill, .natural-wetland, .landuse-construction, .landuse-brownfield, .landuse-garages {
+    fill: #b5b491;
+}
+
+.natural-beach, .natural-shoal, .natural-sand {
+    fill: #fff0bd;
+}
+
+.boundary-administrative {
+    fill: none;
+    stroke-width: 18;
+    stroke: #ce9bc8;
+}
+
+/*
+ *  HIGHWAYS!!!!!!!
+ */
+
+.highway-motorway, .highway-motorway_link, .highway-raceway{
+    stroke: #eb8e9f;
+}
+
+.highway-trunk, .highway-trunk_link {
+    stroke: #febeac;
+}
+
+.highway-primary, .highway-primary_link  {
+    stroke: #ffd5a2;
+}
+
+.highway-secondary, .highway-secondary_link {
+    stroke: #f7f9bc;
+}
+
+.highway-living_street, .highway-pedestrian, .highway-road {
+    stroke: #ffffff;
+}
+
+polyline:not([class*="highway-"]) {
+    stroke: #d3d2d2;
+    stroke-width: 0.5;
+}
+
+.highway-motorway{
+    stroke-width: 4;
+}
+
+.highway-trunk, .highway-primary, .highway-secondary, .highway-tertiary, .highway-living_street,
+.highway-pedestrian {
+    stroke-width: 2;
+}
+.highway-raceway, .highway-road, .highway-trunk_link{
+    stroke-width: 1;
+}
+
+
+polyline[class*="footway"], .highway-path, .highway-bridleway, .highway-steps,
+.power-line, .power-minor_line{
+    display: none;
+}
+polyline {
+    fill: none;
+    stroke: #FFFFFF;
+    stroke-linecap: square;
+    stroke-linejoin: round;
+    stroke-width: 0.5;
+}
+.contours{
+    fill: none;
+    stroke: #646464;
+    stroke-width: 1;
+}
+text{
+    font-size: 12px;
+}

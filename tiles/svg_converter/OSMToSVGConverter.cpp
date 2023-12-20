@@ -24,7 +24,8 @@ double geoInfo::_kmIn1degLon(double lon) {
 
 void OSMToSVGConverter::draw(const string &patternFile, double layerDist) {
     painter.start();
-    painter.addPatternsFromFile(patternFile);
+    if(filesystem::exists(patternFile))
+        painter.addPatternsFromFile(patternFile);
     painter.rect({0, 0}, painter.WIDTH, painter.HEIGHT, "osm");
 
     texturePainter.draw(&painter, painter.WIDTH, painter.HEIGHT);
@@ -34,10 +35,13 @@ void OSMToSVGConverter::draw(const string &patternFile, double layerDist) {
         stringstream _class;
         for (auto tg: w.second.getAttributes().getTags()) {
             if(map_features::featureExists(tg.first)){
-                _class << tg.first;
-                if(tg.second.find(' ')==string::npos&&tg.second.find('&')==string::npos)
-                    _class <<  "-" << tg.second;
-                _class << " ";
+                string temp =  tg.first;
+                if(tg.second.find(' ')==string::npos&&tg.second.find('&')==string::npos){
+                    temp+="-" + tg.second;
+                    if(temp == "amenity-grave_yard")
+                        temp = "grave_yard";
+                }
+                _class <<temp<< " ";
             }
         }
         int xmin=painter.WIDTH+1,xmax=-1,ymin=painter.HEIGHT+1,ymax=-1;

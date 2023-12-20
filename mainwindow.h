@@ -27,8 +27,11 @@ private slots:
     void showSettingsScreen();
     void showDynamicScreen();
     void showVectorScreen();
+    void showStaticScreen();
     void showDynamicMap(QVector<QString> checkedDist);
     void showVectorMap(QVector<QString> checkedDist);
+    void showStaticMap(QVector<QString> checkedDist);
     void loadVector(Params * par);
+    void loadStatic(Params * par);
 };
 #endif // MAINWINDOW_H

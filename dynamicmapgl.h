@@ -14,7 +14,10 @@
 struct TileInfo{
     QOpenGLTexture* texture;
     double vertex_c[8];
+    TileInfo();
     TileInfo(QString tName, double minLat, double minLon, double maxLat, double maxLon);
+    void setTexture(QString tName, double minLat, double minLon, double maxLat, double maxLon);
+    bool defined();
     ~TileInfo();
 };
 

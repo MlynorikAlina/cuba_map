@@ -32,6 +32,10 @@ SOURCES += \
     osmparser.cpp \
     parameterswindow.cpp \
     settingsscreen.cpp \
+    staticmapgl.cpp \
+    staticosmloader.cpp \
+    statictilesgenerator.cpp \
+    textureloader.cpp \
     tiles/GeoInfo.cpp \
     tiles/Geometry.cpp \
     tiles/GraphicPrimitives.cpp \
@@ -48,8 +52,7 @@ SOURCES += \
     tiles/svg_converter/SVGPainter.cpp \
     tilesselector.cpp \
     vectormapgl.cpp \
-    vectorosmloader.cpp \
-    vectortextureloader.cpp
+    vectorosmloader.cpp
 
 HEADERS += \
     asterdownloader.h \
@@ -66,6 +69,10 @@ HEADERS += \
     parameterswindow.h \
     params.h \
     settingsscreen.h \
+    staticmapgl.h \
+    staticosmloader.h \
+    statictilesgenerator.h \
+    textureloader.h \
     tiles/GeoInfo.h \
     tiles/Geometry.h \
     tiles/GraphicPrimitives.h \
@@ -82,8 +89,7 @@ HEADERS += \
     tiles/svg_converter/SVGPainter.h \
     tilesselector.h \
     vectormapgl.h \
-    vectorosmloader.h \
-    vectortextureloader.h
+    vectorosmloader.h
 
 FORMS += \
     dynamicscreen.ui \

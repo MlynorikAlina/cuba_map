@@ -5,6 +5,7 @@
 #include <QResizeEvent>
 #include <QWidget>
 #include <dynamicmapgl.h>
+#include <staticmapgl.h>
 #include <vectormapgl.h>
 
 namespace Ui {
@@ -19,6 +20,7 @@ public:
     explicit MapScreen(QWidget *parent = nullptr);
     void setMapDynamic(QVector<QString> checkedDist);
     void setMapVector(QVector<QString> checkedDist);
+    void setMapStatic(QVector<QString> checkedDist);
     ~MapScreen();
 
 public slots:
@@ -31,6 +33,7 @@ private:
     QString dynamicMapDir;
     DynamicMapGL* dynamicMap;
     VectorMapGL * vectorMap;
+    StaticMapGL * staticMap;
     Ui::MapScreen *ui;
 };
 

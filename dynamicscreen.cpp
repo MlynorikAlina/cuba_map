@@ -1,5 +1,6 @@
 #include <osmparser.h>
 #include "dynamicscreen.h"
+#include "settingsscreen.h"
 #include "ui_dynamicscreen.h"
 
 
@@ -67,7 +68,7 @@ void DynamicScreen::parseFiles(QVector<int> borders) {
 
 void DynamicScreen::loadDynamic(Params * par)
 {
-    if(par->isDynamicParams){
+    if(par->mode == DYNAMIC){
         setEnabled(false);
         this->par = par;
         Selection box = tileSelector->getBox();
@@ -82,6 +83,7 @@ void DynamicScreen::loadDynamic(Params * par)
         int osmCount=(l[3]-l[2])*(l[1]-l[0]);
         filesToLoadTotal = (1+(par->checkedDist.size() + 1)/(TILE_STEP*TILE_STEP)) * osmCount;
         filesToLoad = 0;
+        parsed=0;
         qDebug()<<"total:"<<filesToLoadTotal;
         p->setProgressRange(0,filesToLoadTotal);
         parseFiles(l);
@@ -96,11 +98,11 @@ void DynamicScreen::generateTiles() {
             QTextStream ss(&f);
             ss<<par->c_lat<<" "<<par->c_lon<<Qt::endl;
             QString tilesDir = DYNAMIC_MAP_DIR;
-            ss<<tilesDir;
+            ss<<tilesDir<<Qt::endl;
             f.close();
         }
 
-        DynamicTilesGenerator* tg = new DynamicTilesGenerator(DYNAMIC_MAP_DIR, DEFAULT_TILE_SIZE, par->checkedDist);
+        DynamicTilesGenerator* tg = new DynamicTilesGenerator(DYNAMIC_MAP_DIR, DEFAULT_TILE_SIZE, SettingsScreen::getStatStyle(), par->checkedDist);
         connect(tg, &DynamicTilesGenerator::tileGenerated, this, &DynamicScreen::fileLoad);
         tg->setBorder(b);
         tg->start();

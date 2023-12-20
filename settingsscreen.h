@@ -7,6 +7,8 @@
 #include <QTabWidget>
 #include <QWidget>
 #include <tiles/OverpassFilter.h>
+#include <QGroupBox>
+#include <QRadioButton>
 
 struct FeatureList{
     QJsonObject jobject;
@@ -28,13 +30,21 @@ public:
     ~SettingsScreen();
 
     static OverpassFilter* getFilter(int dist);
-
+    static QString getVecStyle();
+    static QString getStatStyle();
 private:
     FeatureList fl;
     Ui::SettingsScreen *ui;
     QTabWidget* filter;
+    QVector<QRadioButton *> theme;
+    static QVector<QString> themeVec;
+    static QVector<QString> themeStat;
     static QMap<int, QMap<QString, bool>> h_filter;
+    static int checkedThemeInd;
+    void addTheme(QGroupBox* group);
+    static void initTheme();
 private slots:
+    void updCheckedThemeInd();
     void filterChanged(const QModelIndex & ind);
 };
 

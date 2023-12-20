@@ -71,6 +71,7 @@
      <string>mode</string>
     </property>
     <addaction name="actiondynamic_map"/>
+    <addaction name="actionstatic_map"/>
     <addaction name="actionvector_map"/>
     <addaction name="actionsettings"/>
    </widget>
@@ -94,6 +95,11 @@
   <action name="actionvector_map">
    <property name="text">
     <string>vector map</string>
+   </property>
+  </action>
+  <action name="actionstatic_map">
+   <property name="text">
+    <string>static map</string>
    </property>
   </action>
  </widget>

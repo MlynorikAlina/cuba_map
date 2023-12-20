@@ -142,13 +142,28 @@ void DynamicMapGL::move(double dlat, double dlon)
 }
 
 
+TileInfo::TileInfo()
+{
+    texture = NULL;
+}
+
 TileInfo::TileInfo(QString tName, double minLat, double minLon, double maxLat, double maxLon)
+{
+    setTexture(tName,minLat,minLon,maxLat,maxLon);
+}
+
+void TileInfo::setTexture(QString tName, double minLat, double minLon, double maxLat, double maxLon)
 {
     texture = new QOpenGLTexture(QImage(tName).mirrored());
     vertex_c[0] = vertex_c[2] = minLon;
     vertex_c[1] = vertex_c[7] = minLat;
     vertex_c[4] = vertex_c[6] = maxLon;
     vertex_c[5] = vertex_c[3] = maxLat;
+}
+
+bool TileInfo::defined()
+{
+    return texture!=NULL;
 }
 
 TileInfo::~TileInfo()
