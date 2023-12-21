@@ -8,7 +8,7 @@
 
 #include <QDirIterator>
 #include <QTextStream>
-#include <asterparserdynamic.h>
+#include <asterparser.h>
 #include <settingsscreen.h>
 
 
@@ -39,7 +39,8 @@ void DynamicTilesGenerator::run()
         if (!dir.exists())
             dir.mkpath(dir.absolutePath());
 
-        AsterParserDynamic *p = new AsterParserDynamic(ASTER_DIR, tempAster, QString::number(tsize), QString::number(TILE_STEP), QString::number(TILE_STEP_PREC));
+        AsterParser *p = new AsterParser;
+        p->setDynamicArgs(ASTER_DIR, tempAster, tsize, TILE_STEP, TILE_STEP_PREC);
         p->exec();
 
         QString outDir = dynamicMapDir + e + "/";

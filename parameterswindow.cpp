@@ -109,7 +109,6 @@ void ParametersWindow::updProgress()
 
 void ParametersWindow::finishProgress()
 {
-    __TIME__
     ui->progressBar->hide();
     ui->cancelButton->show();
     ui->okButton->show();

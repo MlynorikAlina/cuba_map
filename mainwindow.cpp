@@ -1,3 +1,4 @@
+#include "asterparser.h"
 #include "mainwindow.h"
 #include "params.h"
 #include "ui_mainwindow.h"
@@ -7,7 +8,6 @@
 #include <cmath>
 #include <staticosmloader.h>
 #include <vectorosmloader.h>
-#include <textureloader.h>
 #include <statictilesgenerator.h>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -58,8 +58,6 @@ void MainWindow::showSettingsScreen()
     mapOptions->menuAction()->setVisible(false);
     p->hide();
 }
-
-
 
 void MainWindow::showDynamicScreen()
 {
@@ -152,17 +150,17 @@ void MainWindow::loadVector(Params * par)
         if(!same){
 
             VectorOsmLoader * ol = new VectorOsmLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
-            AsterDownloader* asterParser  = new AsterDownloader(ASTER_DIR, ASTER_URL);
-            TextureLoader * tl = new TextureLoader(TMP_VEC_TEXTURE,ASTER_DIR, ol->getBox());
-            connect(tl, &TextureLoader::finished, ol, &VectorOsmLoader::load);
+            AsterDownloader* ad  = new AsterDownloader(ASTER_DIR, ASTER_URL);
+            AsterParser * ap = new AsterParser;
+            ap->setVectorArgs(TMP_VEC_TEXTURE, ASTER_DIR, ol->getBox());
+            connect(ap, &AsterParser::finished, ol, &VectorOsmLoader::load);
             connect(ol, &VectorOsmLoader::finished, p, &ParametersWindow::finishProgress);
 
             Bbox box =  ol->getBox();
             QVector<int> borders = {int(floor(box.minLon)), int(ceil(box.maxLon)), int(floor(box.minLat)), int(ceil(box.maxLat))};
-            asterParser->setList(borders);
-            connect(asterParser, &AsterDownloader::finished, tl, &TextureLoader::load);
-
-            asterParser->run();
+            ad->setList(borders);
+            connect(ad, &AsterDownloader::finished, ap, &AsterParser::load);
+            ad->run();
         }
         else p->finishProgress();
     }

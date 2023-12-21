@@ -1,23 +1,25 @@
 #ifndef ASTERPARSER_H
 #define ASTERPARSER_H
 
-#include <QString>
 #include <QThread>
 
-
+#include <tiles/OverpassFilter.h>
 
 class AsterParser : public QThread
 {
 public:
-    AsterParser(QString asterDir, QString outDir, QString contoursFile, QString textureFile, QString size, QString lat, QString lon, QString dist);
-
-    // QThread interface
+    explicit AsterParser(QObject *parent = nullptr);
+    void setDynamicArgs(QString asterDir, QString outDir, int size, double tileStep, int tileStepPrec);
+    void setStaticArgs(QString textureFile, QString asterDir, int size, Bbox border);
+    void setVectorArgs(QString textureFile, QString asterDir, Bbox box);
+    void exec();
+public slots:
+    void load();
 protected:
     void run();
 
 private:
-    QStringList params;
-    static QHash<QString, QString> contoursFrac;
+    QStringList args;
 };
 
 #endif // ASTERPARSER_H

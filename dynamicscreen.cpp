@@ -11,7 +11,7 @@
 #include <QThread>
 #include <QMutex>
 #include <QNetworkReply>
-#include <networkdownload.h>
+#include <network.h>
 #include <asterdownloader.h>
 #include <QDir>
 #include <dynamictilesgenerator.h>
@@ -42,7 +42,6 @@ void DynamicScreen::setParametersWindow(ParametersWindow *newP)
 }
 
 void DynamicScreen::parseFiles(QVector<int> borders) {
-    __TIME__
     QDir d(OSM_DIR);
     if(!d.exists())
         d.mkpath(d.absolutePath());
@@ -50,8 +49,6 @@ void DynamicScreen::parseFiles(QVector<int> borders) {
     d.setPath(ASTER_DIR);
     if(!d.exists())
         d.mkpath(d.absolutePath());
-
-
 
     AsterDownloader* asterParser  = new AsterDownloader(ASTER_DIR, ASTER_URL);
     asterParser->setList(borders);

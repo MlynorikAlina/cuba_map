@@ -7,7 +7,7 @@
 #include <QNetworkReply>
 #include <fstream>
 #include <iomanip>
-#include <networkdownload.h>
+#include <network.h>
 #include <qprocess.h>
 
 AsterDownloader::AsterDownloader(const QString &asterDir,
@@ -102,9 +102,9 @@ void AsterDownloader::downloadAster(int lat, int lon) {
         rep->setProperty("file_name", s);
         rep->setProperty("asterDir", asterDir);
         connect(rep, &QNetworkReply::readyRead,
-                [rep] { NetworkDownload::onDownload(rep); });
+                [rep] { Network::onDownload(rep); });
         connect(rep, &QNetworkReply::finished, [rep, this] {
-            NetworkDownload::closeConnection(rep);
+            Network::closeConnection(rep);
             unzip(rep);
         });
     } else{

@@ -1,24 +1,53 @@
 #include "asterparser.h"
+#include <QProcess>
 #include "params.h"
-#include "qdebug.h"
 
-#include <qprocess.h>
-
-QHash<QString, QString> AsterParser::contoursFrac = {{"100","50"},{"70","40"},{"50","30"},{"35","25"},{"25","20"},{"20","15"},{"5","10"}};
-
-AsterParser::AsterParser(QString asterDir, QString outDir, QString contoursFile, QString textureFile, QString size, QString lat, QString lon, QString dist)
+AsterParser::AsterParser(QObject *parent)
+    : QThread{parent}
 {
-    params << STATIC_ASTER_PARSER_PY << asterDir << outDir << contoursFile << textureFile
-           << size << lat << lon << dist << contoursFrac[dist];
+
+}
+
+void AsterParser::setDynamicArgs(QString asterDir, QString outDir, int size, double tileStep, int tileStepPrec)
+{
+    args.clear();
+    args << DYNAMIC_ASTER_PARSER_PY << asterDir << outDir << QString::number(size) <<QString::number(tileStep,'f', tileStepPrec)<<QString::number(tileStepPrec);
+}
+
+void AsterParser::setStaticArgs(QString textureFile, QString asterDir, int size, Bbox border)
+{
+    args.clear();
+    args <<STAT_ASTER_PARSER_PY << asterDir << textureFile <<QString::number(size);
+    args<<QString::number(border.minLon,'f', 8)<<QString::number(border.minLat,'f', 8)<<QString::number(border.maxLon,'f', 8)<<QString::number(border.maxLat,'f', 8);
+}
+
+void AsterParser::setVectorArgs(QString textureFile, QString asterDir, Bbox box)
+{
+    args.clear();
+    args <<VEC_ASTER_PARSER_PY << asterDir <<textureFile<<QString::number(DEFAULT_TILE_SIZE);
+    args<<QString::number(box.minLon,'f', 8)<<QString::number(box.minLat,'f', 8)<<QString::number(box.maxLon,'f', 8)<<QString::number(box.maxLat,'f', 8);
+}
+
+void AsterParser::load()
+{
+    start();
 }
 
 void AsterParser::run()
 {
-    QProcess proc;
-    proc.start(PYTHON, params);
-    if (!proc.waitForStarted(-1) || !proc.waitForFinished(-1)) {
+    QProcess* proc = new QProcess;
+    proc->start(PYTHON, args);
+
+    if (!proc->waitForStarted(-1) || !proc->waitForFinished(-1)) {
         return;
     }
-    if (proc.exitCode() != 0)
-        qDebug() << proc.readAllStandardError();
+    QString err = proc->readAllStandardError();
+    if(err.size()>0)
+        qDebug()<<err;
+    //qDebug()<<proc->readAllStandardOutput();
+}
+
+void AsterParser::exec()
+{
+    run();
 }

@@ -245,6 +245,7 @@ void VectorMapGL::loadTexture(QString file)
 
 void VectorMapGL::setParams(const QString &par)
 {
+    __TIME__
     dist = par;
     QString newStyle = SettingsScreen::getVecStyle();
     if(newStyle!=style){

@@ -17,7 +17,7 @@ DynamicMapGL::DynamicMapGL(QString params):
 
 DynamicMapGL::~DynamicMapGL()
 {
-
+    makeCurrent();
 }
 
 void DynamicMapGL::paintGL()

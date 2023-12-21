@@ -19,7 +19,7 @@ INCLUDEPATH += /usr/include/librsvg-2.0 \
 
 SOURCES += \
     asterdownloader.cpp \
-    asterparserdynamic.cpp \
+    asterparser.cpp \
     clickdetector.cpp \
     dynamicmapgl.cpp \
     dynamicscreen.cpp \
@@ -28,14 +28,13 @@ SOURCES += \
     mainwindow.cpp \
     mapgl.cpp \
     mapscreen.cpp \
-    networkdownload.cpp \
+    network.cpp \
     osmparser.cpp \
     parameterswindow.cpp \
     settingsscreen.cpp \
     staticmapgl.cpp \
     staticosmloader.cpp \
     statictilesgenerator.cpp \
-    textureloader.cpp \
     tiles/GeoInfo.cpp \
     tiles/Geometry.cpp \
     tiles/GraphicPrimitives.cpp \
@@ -56,7 +55,7 @@ SOURCES += \
 
 HEADERS += \
     asterdownloader.h \
-    asterparserdynamic.h \
+    asterparser.h \
     clickdetector.h \
     dynamicmapgl.h \
     dynamicscreen.h \
@@ -64,7 +63,7 @@ HEADERS += \
     mainwindow.h \
     mapgl.h \
     mapscreen.h \
-    networkdownload.h \
+    network.h \
     osmparser.h \
     parameterswindow.h \
     params.h \
@@ -72,7 +71,6 @@ HEADERS += \
     staticmapgl.h \
     staticosmloader.h \
     statictilesgenerator.h \
-    textureloader.h \
     tiles/GeoInfo.h \
     tiles/Geometry.h \
     tiles/GraphicPrimitives.h \

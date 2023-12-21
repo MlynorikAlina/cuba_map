@@ -33,7 +33,6 @@ void OSMParser::run()
             QTextStream s(&n);
             s << "planet/" << i + 90 << "_" << j + 180 << ".osm.pbf";
             parseOsm(max(list[2],i), max(list[0],j), min(list[3],i+PLANET_TILES_STEP), min(list[1],j+PLANET_TILES_STEP), n);
-            //__TIME__
     }
     dir.rmdir(dir.absolutePath());
 }

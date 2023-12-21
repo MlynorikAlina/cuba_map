@@ -1,26 +1,26 @@
-#include "networkdownload.h"
+#include "network.h"
 
 #include <QFile>
 
-NetworkDownload::NetworkDownload()
+Network::Network()
 {
 
 }
 
-void NetworkDownload::updateProgress(QProgressBar* progressBar, qint64 bytesReceived, qint64 bytesTotal)
+void Network::updateProgress(QProgressBar* progressBar, qint64 bytesReceived, qint64 bytesTotal)
 {
     progressBar->setRange(0, bytesTotal);
     progressBar->setValue(bytesReceived);
 }
 
-void NetworkDownload::showProgress(QProgressBar *progressBar)
+void Network::showProgress(QProgressBar *progressBar)
 {
     progressBar->setRange(0,1);
     progressBar->setValue(0);
     progressBar->show();
 }
 
-void NetworkDownload::onDownload(QNetworkReply* rep) {
+void Network::onDownload(QNetworkReply* rep) {
     QString fileName = rep->property("file_name").toString();
     QByteArray data = rep->readAll();
 
@@ -30,7 +30,7 @@ void NetworkDownload::onDownload(QNetworkReply* rep) {
     file.close();
 }
 
-void NetworkDownload::closeConnection(QNetworkReply *rep)
+void Network::closeConnection(QNetworkReply *rep)
 {
     rep->deleteLater();
 }

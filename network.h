@@ -1,10 +1,10 @@
-#ifndef NETWORKDOWNLOAD_H
-#define NETWORKDOWNLOAD_H
+#ifndef NETWORK_H
+#define NETWORK_H
 
 #include <QNetworkReply>
 #include <QProgressBar>
 
-class NetworkDownload
+class Network
 {
 public:
     static void onDownload(QNetworkReply *rep);
@@ -12,7 +12,7 @@ public:
     static void updateProgress(QProgressBar *progressBar, qint64 bytesReceived, qint64 bytesTotal);
     static void showProgress(QProgressBar *progressBar);
 private:
-    NetworkDownload();
+    Network();
 };
 
-#endif // NETWORKDOWNLOAD_H
+#endif // NETWORK_H

@@ -1,6 +1,7 @@
 #include <tiles/png_converter/SVGToPNGConverter.h>
 #include "statictilesgenerator.h"
 #include "params.h"
+#include "asterparser.h"
 #include "tiles/GeoInfo.h"
 
 #include <QDir>
@@ -40,18 +41,9 @@ void StaticTilesGenerator::run()
             Bbox border;
             border.setBox(lat - dlat, lon - dlon, lat + dlat, lon + dlon);
 
-            QStringList args;
-
-            args <<STAT_ASTER_PARSER_PY << ASTER_DIR << TMP_STAT_TEXTURE <<QString::number(size);
-            args<<QString::number(border.minLon,'f', 8)<<QString::number(border.minLat,'f', 8)<<QString::number(border.maxLon,'f', 8)<<QString::number(border.maxLat,'f', 8);
-            QProcess* proc = new QProcess;
-            proc->start(PYTHON, args);
-
-            if (!proc->waitForStarted(-1) || !proc->waitForFinished(-1)) {
-                return;
-            }
-            qDebug()<<proc->readAllStandardError();
-            qDebug()<<proc->readAllStandardOutput();
+            AsterParser p;
+            p.setStaticArgs(TMP_STAT_TEXTURE, ASTER_DIR, size, border);
+            p.exec();
 
             OSMToSVGConverter cv(TMP_STAT_OSM, TMP_STAT_TEXTURE, *filter, string(STYLE_DIR) + "test.svg", style.toStdString(), border, size, size);
             cv.draw(PATTERNS_FILE, 1);

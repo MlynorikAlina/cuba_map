@@ -27,7 +27,7 @@ class DynamicMapGL : public MapGL
 
 public:
     DynamicMapGL(QString params);
-
+    ~DynamicMapGL();
     // QOpenGLWidget interface
 protected:
     void paintGL();
