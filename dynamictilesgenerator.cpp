@@ -13,13 +13,6 @@
 
 
 
-
-/*DynamicTilesGenerator::DynamicTilesGenerator(QString osmFile, QString textureFile, QString outPngDir, OverpassFilter *filter, int lat, int lon, int size, double frac, int prec):
-    osmFile(osmFile), textureFile(textureFile), outPngDir(outPngDir), filter(filter), size(size), frac(frac), prec(prec), lat(lat), lon(lon)
-{
-
-}*/
-
 void DynamicTilesGenerator::startPainting()
 {
     this->start();

@@ -30,26 +30,16 @@ TilesSelectorScreen::TilesSelectorScreen(QWidget *parent)
     if(!dir.exists())
         dir.mkpath(DYNAMIC_MAP_DIR);
     connect(ui->parseButton, &QPushButton::clicked, this, &TilesSelectorScreen::hide);
+    connect(ui->parseButton, &QPushButton::clicked, this, &TilesSelectorScreen::clicked);
 }
 
 TilesSelectorScreen::~TilesSelectorScreen() { delete ui; }
-
-void TilesSelectorScreen::connectParametersWindow(ParametersWindow *newP)
-{
-    p = newP;
-    connect(ui->parseButton, &QPushButton::clicked, this, &TilesSelectorScreen::showParameters);
-}
 
 Selection TilesSelectorScreen::getBox()
 {
     return tileSelector->getBox();
 }
 
-void TilesSelectorScreen::showParameters()
-{
-    p->show();
-    p->setDynamicParams();
-}
 
 
 

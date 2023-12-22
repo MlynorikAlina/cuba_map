@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->parametersScreen, &ParametersWindow::parametersLoaded, mapLoader,
             &MapLoader::loadStatic);
 
-    ui->tilesSelectorScreen->connectParametersWindow(ui->parametersScreen);
+    connect(ui->tilesSelectorScreen,&TilesSelectorScreen::clicked, this,&MainWindow::showDynamicParameters);
     showDynamicScreen();
 }
 
@@ -109,4 +109,9 @@ void MainWindow::showStaticMap(QVector<QString> checkedDist) {
     ui->parametersScreen->hide();
 }
 
+void MainWindow::showDynamicParameters()
+{
+    ui->parametersScreen->show();
+    ui->parametersScreen->setDynamicParams();
+}
 

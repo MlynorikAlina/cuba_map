@@ -24,6 +24,7 @@ private:
     QMenu* mapOptions;
     MapLoader* mapLoader;
 private slots:
+    void showDynamicParameters();
     void showSettingsScreen();
     void showDynamicScreen();
     void showVectorScreen();

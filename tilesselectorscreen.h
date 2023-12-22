@@ -20,17 +20,15 @@ class TilesSelectorScreen : public QWidget
 public:
     explicit TilesSelectorScreen(QWidget *parent = nullptr);
     ~TilesSelectorScreen();
-    void connectParametersWindow(ParametersWindow *newP);
     Selection getBox();
+signals:
+    void clicked();
 private:
     Ui::TilesSelectorScreen *ui;
-    ParametersWindow * p;
     QAtomicInt filesToLoad;
     QAtomicInt filesToLoadTotal;
     QAtomicInt parsed;
     TilesSelector* tileSelector;
-private slots:
-    void showParameters();
 };
 
 #endif // TILESSELECTORSCREEN_H
