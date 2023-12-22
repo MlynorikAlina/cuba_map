@@ -47,8 +47,8 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 private:
     void updateStyle();
-
-    OSMParser parser;
+    
+    OSMParse parser;
     QString dist;
     QString osmFileDir;
     QString style;

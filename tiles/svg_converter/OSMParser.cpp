@@ -9,7 +9,7 @@
 #include "OSMParser.h"
 
 
-OSMParser::OSMParser(const string &osmFileName, const OverpassFilter &filter) : filter(filter) {
+OSMParse::OSMParse(const string &osmFileName, const OverpassFilter &filter) : filter(filter) {
     if (filter.getIncludedFeatures().empty()) {
         features = map_features::getStringAllExcept(filter.getExcludedFeatures());
     } else {
@@ -20,7 +20,7 @@ OSMParser::OSMParser(const string &osmFileName, const OverpassFilter &filter) : 
 
 }
 
-map<string, NodeAttributes> OSMParser::getNodes() {
+map<string, NodeAttributes> OSMParse::getNodes() {
     map<string, NodeAttributes> nodes;
     appendNodes(nodes);
     return nodes;
@@ -28,7 +28,7 @@ map<string, NodeAttributes> OSMParser::getNodes() {
 
 
 
-bool OSMParser::isIncluded(string k, string v) {
+bool OSMParse::isIncluded(string k, string v) {
 
     if (!filter.getExcludedFeatureOptions().empty()) {
         auto it = filter.getExcludedFeatureOptions().find(mf::mapFeatureMapping[k]);
@@ -39,7 +39,7 @@ bool OSMParser::isIncluded(string k, string v) {
     return true;
 }
 
-list<pair<string, WayData>> OSMParser::getWays(const map<string, NodeAttributes> &nodes) {
+list<pair<string, WayData>> OSMParse::getWays(const map<string, NodeAttributes> &nodes) {
     list<pair<string, WayData>> ways;
     appendWays(ways, nodes);
     ways.sort(wc());
@@ -47,7 +47,7 @@ list<pair<string, WayData>> OSMParser::getWays(const map<string, NodeAttributes>
 }
 
 
-void OSMParser::setOsmFile(const string &osmFileName) {
+void OSMParse::setOsmFile(const string &osmFileName) {
     if(osmFile.is_open()){
         osmFile.close();
         doc.reset();
@@ -64,21 +64,20 @@ void OSMParser::setOsmFile(const string &osmFileName) {
     //TODO::exception
 }
 
-void OSMParser::setFilterBbox(double minLon, double minLat, double maxLon, double maxLat) {
+void OSMParse::setFilterBbox(double minLon, double minLat, double maxLon, double maxLat) {
     filter.setBbox(minLon, minLat, maxLon, maxLat);
 }
 
-Bbox OSMParser::getFilterBbox()
+Bbox OSMParse::getFilterBbox()
 {
     return filter.getBbox();
 }
 
-void OSMParser::appendNodes(map<string, NodeAttributes> &nodes) {
+void OSMParse::appendNodes(map<string, NodeAttributes> &nodes) {
     for (auto nd: osmNode.children("node")) {
         string id;
         int count = 0;
-        double lat, lon, ele;
-        bool hasEle = false;
+        double lat, lon;
         for (auto attr: nd.attributes()) {
             const char *attrName = attr.name();
             if (strcmp(attrName, "id") == 0) {
@@ -98,12 +97,10 @@ void OSMParser::appendNodes(map<string, NodeAttributes> &nodes) {
     }
 }
 
-void OSMParser::appendWays(list<pair<string, WayData>> &ways, const map<string, NodeAttributes> &nodes) {
+void OSMParse::appendWays(list<pair<string, WayData>> &ways, const map<string, NodeAttributes> &nodes) {
     string id;
-    double lon, lat;
     bool isHighway;
     string firstRef, lastRef;
-    bool noTags;
     bool exclude;
     for (auto w: osmNode.children("way")) {
         WayData wd;
@@ -167,12 +164,11 @@ void OSMParser::appendWays(list<pair<string, WayData>> &ways, const map<string, 
     }
 }
 
-void OSMParser::appendRel(map<string, RelData>  &rel)
+void OSMParse::appendRel(map<string, RelData>  &rel)
 {
 
     string id;
     string firstRef, lastRef;
-    bool noTags;
     bool exclude;
     for (auto r: osmNode.children("relation")) {
         RelData rd;
@@ -228,7 +224,7 @@ void OSMParser::appendRel(map<string, RelData>  &rel)
     }
 }
 
-OSMParser::OSMParser(const OverpassFilter &filter) {
+OSMParse::OSMParse(const OverpassFilter &filter) {
     if (filter.getIncludedFeatures().empty()) {
         features = map_features::getStringAllExcept(filter.getExcludedFeatures());
     } else {

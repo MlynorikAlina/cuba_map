@@ -1,15 +1,15 @@
-#ifndef OSMPARSER_H
-#define OSMPARSER_H
+#ifndef OSMTILESGENERATOR_H
+#define OSMTILESGENERATOR_H
 
 #include <QThread>
 
 
 
-class OSMParser : public QThread
+class OSMTilesGenerator : public QThread
 {
     Q_OBJECT
 public:
-    OSMParser(const QString &osmDir, const QString & pbfDirName);
+    OSMTilesGenerator(const QString &osmDir, const QString & pbfDirName);
     void putBorderPoint(int p);
 
     void setList(QVector<int> &newList);
@@ -29,4 +29,4 @@ private:
 
 };
 
-#endif // OSMPARSER_H
+#endif // OSMTILESGENERATOR_H

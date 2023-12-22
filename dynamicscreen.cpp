@@ -1,4 +1,4 @@
-#include <osmparser.h>
+#include <osmtilesgenerator.h>
 #include "dynamicscreen.h"
 #include "settingsscreen.h"
 #include "ui_dynamicscreen.h"
@@ -55,9 +55,9 @@ void DynamicScreen::parseFiles(QVector<int> borders) {
     connect(asterParser, &AsterDownloader::fileDownloaded, this, &DynamicScreen::fileLoad);
     connect(asterParser, &AsterDownloader::finished, this, &DynamicScreen::startGeneratingTiles);
 
-    OSMParser * p = new OSMParser(OSM_DIR, WORLD_PBF_DIR);
-    connect(p, &OSMParser::fileParsed, this, &DynamicScreen::fileLoad);
-    connect(p, &OSMParser::finished, this, &DynamicScreen::startGeneratingTiles);
+    OSMTilesGenerator * p = new OSMTilesGenerator(OSM_DIR, WORLD_PBF_DIR);
+    connect(p, &OSMTilesGenerator::fileParsed, this, &DynamicScreen::fileLoad);
+    connect(p, &OSMTilesGenerator::finished, this, &DynamicScreen::startGeneratingTiles);
     p->setList(borders);
     p->start();
     asterParser->run();

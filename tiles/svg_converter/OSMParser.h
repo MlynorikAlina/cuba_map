@@ -14,7 +14,7 @@ using namespace std;
 
 
 
-class OSMParser {
+class OSMParse {
 private:
     ifstream osmFile;
     pugi::xml_document doc;
@@ -25,8 +25,8 @@ private:
 
     bool isIncluded(string k, string v);
 public:
-    explicit OSMParser(const string &osmFileName, const OverpassFilter& filter);
-    explicit OSMParser(const OverpassFilter& filter);
+    explicit OSMParse(const string &osmFileName, const OverpassFilter& filter);
+    explicit OSMParse(const OverpassFilter& filter);
 
     void setOsmFile(const string &osmFileName);
 

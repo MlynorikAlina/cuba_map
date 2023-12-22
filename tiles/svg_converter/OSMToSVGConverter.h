@@ -23,7 +23,7 @@ namespace geoInfo{
 
 class OSMToSVGConverter {
 private:
-    OSMParser parser;
+    OSMParse parser;
     SVGPainter painter;
     EleContoursProcessor* elePainter;
     CoastlinePainter texturePainter;

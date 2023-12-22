@@ -29,11 +29,11 @@ SOURCES += \
     mapgl.cpp \
     mapscreen.cpp \
     network.cpp \
-    osmparser.cpp \
+    osmloader.cpp \
+    osmtilesgenerator.cpp \
     parameterswindow.cpp \
     settingsscreen.cpp \
     staticmapgl.cpp \
-    staticosmloader.cpp \
     statictilesgenerator.cpp \
     tiles/GeoInfo.cpp \
     tiles/Geometry.cpp \
@@ -50,8 +50,7 @@ SOURCES += \
     tiles/svg_converter/OSMToSVGConverter.cpp \
     tiles/svg_converter/SVGPainter.cpp \
     tilesselector.cpp \
-    vectormapgl.cpp \
-    vectorosmloader.cpp
+    vectormapgl.cpp
 
 HEADERS += \
     asterdownloader.h \
@@ -64,12 +63,12 @@ HEADERS += \
     mapgl.h \
     mapscreen.h \
     network.h \
-    osmparser.h \
+    osmloader.h \
+    osmtilesgenerator.h \
     parameterswindow.h \
     params.h \
     settingsscreen.h \
     staticmapgl.h \
-    staticosmloader.h \
     statictilesgenerator.h \
     tiles/GeoInfo.h \
     tiles/Geometry.h \
@@ -86,8 +85,7 @@ HEADERS += \
     tiles/svg_converter/OSMToSVGConverter.h \
     tiles/svg_converter/SVGPainter.h \
     tilesselector.h \
-    vectormapgl.h \
-    vectorosmloader.h
+    vectormapgl.h
 
 FORMS += \
     dynamicscreen.ui \

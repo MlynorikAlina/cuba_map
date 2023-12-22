@@ -106,41 +106,6 @@ void EleContoursProcessor::drawInnerContour(SVGPainter &painter,
     painter.addToSVG(ss.str());
 }
 
-void EleContoursProcessor::drawOuterContour(SVGPainter &painter,
-                                            std::vector<geom::Point> &MVO,
-                                            int &width, int &height, double ele,
-                                            int layer) {
-    /*stringstream ss;
-  auto p = convert(MVO[0], box, width, height);
-  MVO.pop_back();
-  ss << "<path d=\"M " << p.getX() << "," << p.getY() << " Q ";
-
-  stringstream t;
-  t << fixed << setprecision(1) << ele;
-  for (int i = 0; i < MVO.size(); i++) {
-      geom::Point q;
-      double x = (MVO[i - 1].getX() + MVO[i].getX()) / 2;
-      double y = (MVO[i - 1].getY() + MVO[i].getY()) / 2;
-      double dx = x - MVO[i - 1].getX();
-      double dy = y - MVO[i - 1].getY();
-      if (GrahamMVO::rotate(&MVO[i - 1], new Point(x - dy, y + dx), &MVO[i]) *
-          GrahamMVO::rotate(new Point(x - dy, y + dx), &MVO[i], &MVO[(i + 1) %
-  MVO.size()]) > 0) { q = convert({x - dy, y + dx}, box, width, height); } else
-  q = convert({x + dy, y - dx}, box, width, height); ss << q.getX() << "," <<
-  q.getY() << " "; p = convert(MVO[i], box, width, height); ss << p.getX() <<
-  "," << p.getY() << " "; if (layer == 100 && i % 100 == 0)
-          painter.text({q.getX() - 5., q.getY() + 5.}, t.str());
-      if (layer == 50 && i % 50 == 0)
-          painter.text({q.getX() - 5., q.getY() + 5.}, t.str());
-      if (layer == 25 && i % 25 == 0)
-          painter.text({q.getX() - 5., q.getY() + 5.}, t.str());
-      if (layer == 20 && i % 10 == 0)
-          painter.text({q.getX() - 5., q.getY() + 5.}, t.str());
-  }
-  ss << "Z\" class=\"contours\"/>";
-  painter.addToSVG(ss.str());*/
-}
-
 void EleContoursProcessor::draw(SVGPainter &painter, int &width, int &height) {
     while (!f.eof()) {
         Json::Value v;

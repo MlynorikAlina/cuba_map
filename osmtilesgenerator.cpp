@@ -1,14 +1,15 @@
-#include "osmparser.h"
+#include "osmtilesgenerator.h"
 #include "qdebug.h"
 
 #include <QDir>
 #include <QProcess>
 #include <QTextStream>
 #include <math.h>
+#include <osmloader.h>
 #include "params.h"
 
 
-OSMParser::OSMParser(const QString &osmDir, const QString &pbfDirName) : osmDir(osmDir),
+OSMTilesGenerator::OSMTilesGenerator(const QString &osmDir, const QString &pbfDirName) : osmDir(osmDir),
     pbfDirName(pbfDirName)
 {
     QDir d(TEMP_FILE_DIR);
@@ -16,13 +17,13 @@ OSMParser::OSMParser(const QString &osmDir, const QString &pbfDirName) : osmDir(
     d.mkpath(d.absolutePath());
 }
 
-void OSMParser::putBorderPoint(int p)
+void OSMTilesGenerator::putBorderPoint(int p)
 {
     if(list.size()<4)
         list.push_back(p);
 }
 
-void OSMParser::run()
+void OSMTilesGenerator::run()
 {
     QDir dir(TEMP_FILE_DIR);
     if (!dir.exists())
@@ -33,39 +34,30 @@ void OSMParser::run()
             QTextStream s(&n);
             s << "planet/" << i + 90 << "_" << j + 180 << ".osm.pbf";
             parseOsm(max(list[2],i), max(list[0],j), min(list[3],i+PLANET_TILES_STEP), min(list[1],j+PLANET_TILES_STEP), n);
-    }
+        }
     dir.rmdir(dir.absolutePath());
 }
 
-void OSMParser::parseOsm(double lat, double lon, QString pbf)
+void OSMTilesGenerator::parseOsm(double lat, double lon, QString pbf)
 {
-    QStringList args;
-    QString b, p;
-    QTextStream s(&p);
+    QString fn;
+    QTextStream s(&fn);
     s.setRealNumberNotation(QTextStream::FixedNotation);
     s.setRealNumberPrecision(1);
     s << osmDir << lat + 90. << "/" << lon + 180. << ".osm";
-    if (!QFile::exists(p)) {
-        QDir dir(p);
-        s.setString(&b);
-        p.push_front("-o=");
-        s <<"-b="<< lon - 0.5*TILE_STEP << "," << lat - 0.5*TILE_STEP << "," << lon + 1.5*TILE_STEP << "," << lat + 1.5*TILE_STEP;
-        args << pbf <<  b << p << "--drop-author" << "--drop-version"<<"--drop-broken-refs";
+    if (!QFile::exists(fn)) {
+        QDir dir(fn);
         dir.setPath(QDir::cleanPath(dir.filePath("../")));
         if (!dir.exists())
             dir.mkpath(dir.absolutePath());
-        QProcess proc;
-        proc.start("osmconvert", args);
-        if (!proc.waitForStarted(-1) || !proc.waitForFinished(-1)) {
-            return;
-        }
-        if (proc.exitCode() != 0)
-            qDebug() << proc.readAllStandardError();
+        OSMLoader ol(lat - 0.5*TILE_STEP, lon - 0.5*TILE_STEP, lat + 1.5*TILE_STEP, lon + 1.5*TILE_STEP);
+        ol.setTempOsm(fn);
+        ol.parsePBF(pbf, fn);
     }
     emit fileParsed();
 }
 
-void OSMParser::parseOsm(double minlat, double minlon, double maxlat, double maxlon, QString pbf)
+void OSMTilesGenerator::parseOsm(double minlat, double minlon, double maxlat, double maxlon, QString pbf)
 {
     double clat = floor((minlat+maxlat)/(2*TILE_STEP))*TILE_STEP;
     double clon = floor((minlon+maxlon)/(2*TILE_STEP))*TILE_STEP;
@@ -93,22 +85,9 @@ void OSMParser::parseOsm(double minlat, double minlon, double maxlat, double max
             for(int i = 0; i<2; i++)
                 for(int j = 0; j<2; j++){
                     QString tfn = TEMP_FILE_DIR + QString::number(tf_count++) + ".osm.pbf";
-                    QString b, f;
-                    QTextStream s(&b);
-                    s.setRealNumberPrecision(1);
-                    s.setRealNumberNotation(QTextStream::FixedNotation);
-                    s <<"-b="<< lon[j] << "," << lat[i] << "," << lon[j+1] << "," << lat[i+1];
-                    f = "-o=" + tfn;
-                    QStringList args;
-                    args << pbf <<  b << f <<"--complete-ways"<< "--drop-author" << "--drop-version" <<"--drop-broken-refs";
-                    QProcess proc;
-                    proc.start("osmconvert", args);
-                    if (!proc.waitForStarted(-1) || !proc.waitForFinished(-1)) {
-                        return;
-                    }
-                    if (proc.exitCode() != 0)
-                        qDebug() << proc.readAllStandardError();
-                    else{
+                    OSMLoader ol(lat[i], lon[j], lat[i+1], lon[j+1], _VECTOR);
+                    ol.parsePBF(pbf, tfn);
+                    if (ol.getExitCode() == 0){
                         parseOsm(lat[i], lon[j], lat[i+1], lon[j+1], tfn);
                     }
                     QFile(tfn).remove();
@@ -122,7 +101,7 @@ void OSMParser::parseOsm(double minlat, double minlon, double maxlat, double max
     }
 }
 
-void OSMParser::setList(QVector<int> &newList)
+void OSMTilesGenerator::setList(QVector<int> &newList)
 {
     list.clear();
     list.append(newList);

@@ -18,8 +18,6 @@ private:
     std::ifstream f;
     void drawInnerContour(SVGPainter &painter, std::vector<geom::Point> &MVO, int &width,
                           int &height, double ele);
-    void drawOuterContour(SVGPainter &painter, std::vector<geom::Point> &MVO, int &width,
-                          int &height, double ele, int layer);
     void draw(SVGPainter &painter, int &width, int &height);
 public:
     explicit EleContoursProcessor(const std::string& jsonFile);

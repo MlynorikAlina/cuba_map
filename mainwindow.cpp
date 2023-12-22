@@ -6,9 +6,8 @@
 #include <QAction>
 #include <asterdownloader.h>
 #include <cmath>
-#include <staticosmloader.h>
-#include <vectorosmloader.h>
 #include <statictilesgenerator.h>
+#include <osmloader.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -139,7 +138,7 @@ void MainWindow::loadVector(Params * par)
         if(!same && f.open(QFile::WriteOnly)){
             QTextStream ss(&f);
             ss<<par->c_lat<<" "<<par->c_lon<<Qt::endl;
-            ss<<OSM_DIR<<endl;
+            ss<<OSM_DIR<<Qt::endl;
             ss<<par->checkedDist[0];
             f.close();
         }
@@ -149,12 +148,12 @@ void MainWindow::loadVector(Params * par)
 
         if(!same){
 
-            VectorOsmLoader * ol = new VectorOsmLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
+            OSMLoader * ol = new OSMLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
             AsterDownloader* ad  = new AsterDownloader(ASTER_DIR, ASTER_URL);
             AsterParser * ap = new AsterParser;
             ap->setVectorArgs(TMP_VEC_TEXTURE, ASTER_DIR, ol->getBox());
-            connect(ap, &AsterParser::finished, ol, &VectorOsmLoader::load);
-            connect(ol, &VectorOsmLoader::finished, p, &ParametersWindow::finishProgress);
+            connect(ap, &AsterParser::finished, ol, &OSMLoader::load);
+            connect(ol, &OSMLoader::finished, p, &ParametersWindow::finishProgress);
 
             Bbox box =  ol->getBox();
             QVector<int> borders = {int(floor(box.minLon)), int(ceil(box.maxLon)), int(floor(box.minLat)), int(ceil(box.maxLat))};
@@ -193,12 +192,12 @@ void MainWindow::loadStatic(Params *par)
             QTextStream ss(&f);
             ss<<par->c_lat<<" "<<par->c_lon<<Qt::endl;
             ss<<style<<Qt::endl;
-            ss<<OSM_DIR<<endl;
+            ss<<OSM_DIR<<Qt::endl;
             ss<<par->checkedDist[0];
             f.close();
         }
 
-        StaticOsmLoader * ol = new StaticOsmLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
+        OSMLoader * ol = new OSMLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
         AsterDownloader* asterParser  = new AsterDownloader(ASTER_DIR, ASTER_URL);
 
         StaticTilesGenerator* tg = new StaticTilesGenerator(par->c_lat.toDouble(), par->c_lon.toDouble(),STATIC_TILE_SIZE, par->checkedDist, tilesSame, style);
@@ -209,8 +208,8 @@ void MainWindow::loadStatic(Params *par)
         QVector<int> borders = {int(floor(box.minLon)), int(ceil(box.maxLon)), int(floor(box.minLat)), int(ceil(box.maxLat))};
         asterParser->setList(borders);
         if(!same){
-            connect(asterParser, &AsterDownloader::finished, ol, &StaticOsmLoader::load);
-            connect(ol, &StaticOsmLoader::finished, tg, &StaticTilesGenerator::load);
+            connect(asterParser, &AsterDownloader::finished, ol, &OSMLoader::load);
+            connect(ol, &OSMLoader::finished, tg, &StaticTilesGenerator::load);
         }else{
             connect(asterParser, &AsterDownloader::finished, tg, &StaticTilesGenerator::load);
         }
