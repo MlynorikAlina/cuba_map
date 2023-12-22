@@ -160,7 +160,7 @@ void MapLoader::loadDynamic(Params *par)
         connect(asterParser, &AsterDownloader::finished, this, &MapLoader::startGeneratingTiles);
 
         OSMTilesGenerator * tg = new OSMTilesGenerator(OSM_DIR, WORLD_PBF_DIR);
-        connect(tg, SIGNAL(fileParsed()), tg, SLOT(updProgress()));
+        connect(tg, SIGNAL(fileParsed()), p, SLOT(updProgress()));
         connect(tg, &OSMTilesGenerator::finished, this, &MapLoader::startGeneratingTiles);
         tg->setList(l);
         tg->start();

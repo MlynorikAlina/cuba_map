@@ -24,10 +24,13 @@ public:
     Selection getBox();
 private:
     Ui::TilesSelectorScreen *ui;
+    ParametersWindow * p;
     QAtomicInt filesToLoad;
     QAtomicInt filesToLoadTotal;
     QAtomicInt parsed;
     TilesSelector* tileSelector;
+private slots:
+    void showParameters();
 };
 
 #endif // TILESSELECTORSCREEN_H

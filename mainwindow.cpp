@@ -60,7 +60,6 @@ void MainWindow::showSettingsScreen() {
 void MainWindow::showDynamicScreen() {
     ui->parametersScreen->hide();
     ui->tilesSelectorScreen->show();
-    ui->tilesSelectorScreen->setEnabled(true);
     ui->mapScreen->hide();
     ui->settingsScreen->hide();
     mapOptions->menuAction()->setVisible(false);

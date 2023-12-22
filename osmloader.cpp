@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QProcess>
 #include <cmath>
+#include <QFile>
 
 
 
@@ -59,6 +60,8 @@ void OSMLoader::run()
     }
     args<<QString("-o=") + tempOsm;
     startProc(args);
+    for(uint i=0;i<count;i++)
+        QFile::remove("tf" + QString::number(i) + ".osm");
 }
 
 int OSMLoader::getExitCode() const
