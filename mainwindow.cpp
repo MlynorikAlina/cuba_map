@@ -1,220 +1,113 @@
-#include "asterparser.h"
 #include "mainwindow.h"
+#include "asterparser.h"
 #include "params.h"
 #include "ui_mainwindow.h"
 
 #include <QAction>
 #include <asterdownloader.h>
 #include <cmath>
-#include <statictilesgenerator.h>
 #include <osmloader.h>
+#include <statictilesgenerator.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+    : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     mapOptions = new QMenu("options");
-    QAction* zoomIn = new QAction("zoom in");
-    QAction* zoomOut = new QAction("zoom out");
+    QAction *zoomIn = new QAction("zoom in");
+    QAction *zoomOut = new QAction("zoom out");
     mapOptions->addAction(zoomIn);
     mapOptions->addAction(zoomOut);
     ui->menubar->addMenu(mapOptions);
     mapOptions->menuAction()->setVisible(false);
+    mapLoader = new MapLoader(ui->parametersScreen, ui->tilesSelectorScreen);
 
-    connect(ui->actionsettings,&QAction::triggered, this, &MainWindow::showSettingsScreen);
-    connect(ui->actiondynamic_map,&QAction::triggered, this, &MainWindow::showDynamicScreen);
-    connect(ui->actionvector_map,&QAction::triggered, this, &MainWindow::showVectorScreen);
-    connect(ui->actionstatic_map,&QAction::triggered, this, &MainWindow::showStaticScreen);
-
+    connect(ui->actionsettings, &QAction::triggered, this,
+            &MainWindow::showSettingsScreen);
+    connect(ui->actiondynamic_map, &QAction::triggered, this,
+            &MainWindow::showDynamicScreen);
+    connect(ui->actionvector_map, &QAction::triggered, this,
+            &MainWindow::showVectorScreen);
+    connect(ui->actionstatic_map, &QAction::triggered, this,
+            &MainWindow::showStaticScreen);
 
     connect(zoomIn, &QAction::triggered, ui->mapScreen, &MapScreen::zoomIn);
     connect(zoomOut, &QAction::triggered, ui->mapScreen, &MapScreen::zoomOut);
 
-    p = new ParametersWindow(this);
-    connect(p, &ParametersWindow::showDynamic, this,  &MainWindow::showDynamicMap);
-    connect(p, &ParametersWindow::showVector, this,  &MainWindow::showVectorMap);
-    connect(p, &ParametersWindow::showStatic, this,  &MainWindow::showStaticMap);
-    connect(p, &ParametersWindow::parametersLoaded, this, &MainWindow::loadVector);
-    connect(p, &ParametersWindow::parametersLoaded, this, &MainWindow::loadStatic);
+    connect(ui->parametersScreen, &ParametersWindow::showDynamic, this, &MainWindow::showDynamicMap);
+    connect(ui->parametersScreen, &ParametersWindow::showVector, this, &MainWindow::showVectorMap);
+    connect(ui->parametersScreen, &ParametersWindow::showStatic, this, &MainWindow::showStaticMap);
 
-    ui->dynamicScreen->setParametersWindow(p);
-    p->setWindowFlags(Qt::Window|Qt::WindowStaysOnTopHint);
-    p->setWindowTitle(" ");
+    connect(ui->parametersScreen, &ParametersWindow::parametersLoaded, mapLoader, &MapLoader::loadDynamic);
+    connect(ui->parametersScreen, &ParametersWindow::parametersLoaded, mapLoader,
+            &MapLoader::loadVector);
+    connect(ui->parametersScreen, &ParametersWindow::parametersLoaded, mapLoader,
+            &MapLoader::loadStatic);
+
+    ui->tilesSelectorScreen->connectParametersWindow(ui->parametersScreen);
     showDynamicScreen();
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::showSettingsScreen()
-{
+void MainWindow::showSettingsScreen() {
     ui->settingsScreen->show();
-    ui->dynamicScreen->hide();
+    ui->tilesSelectorScreen->hide();
     ui->mapScreen->hide();
     mapOptions->menuAction()->setVisible(false);
-    p->hide();
+    ui->parametersScreen->hide();
 }
 
-void MainWindow::showDynamicScreen()
-{
-    p->setDynamicParams();
-    ui->dynamicScreen->show();
-    ui->dynamicScreen->setEnabled(true);
+void MainWindow::showDynamicScreen() {
+    ui->parametersScreen->hide();
+    ui->tilesSelectorScreen->show();
+    ui->tilesSelectorScreen->setEnabled(true);
     ui->mapScreen->hide();
     ui->settingsScreen->hide();
     mapOptions->menuAction()->setVisible(false);
 }
 
-void MainWindow::showVectorScreen()
-{
-    p->show();
-    p->setVectorParams();
-    ui->dynamicScreen->hide();
+void MainWindow::showVectorScreen() {
+    ui->parametersScreen->show();
+    ui->parametersScreen->setVectorParams();
+    ui->tilesSelectorScreen->hide();
     ui->mapScreen->hide();
     ui->settingsScreen->hide();
     mapOptions->menuAction()->setVisible(false);
 }
-void MainWindow::showStaticScreen()
-{
-    p->show();
-    p->setStaticParams();
-    ui->dynamicScreen->hide();
+void MainWindow::showStaticScreen() {
+    ui->parametersScreen->show();
+    ui->parametersScreen->setStaticParams();
+    ui->tilesSelectorScreen->hide();
     ui->mapScreen->hide();
     ui->settingsScreen->hide();
     mapOptions->menuAction()->setVisible(false);
 }
 
-void MainWindow::showDynamicMap(QVector<QString> checkedDist)
-{
+void MainWindow::showDynamicMap(QVector<QString> checkedDist) {
     mapOptions->menuAction()->setVisible(true);
     ui->mapScreen->show();
     ui->mapScreen->setMapDynamic(checkedDist);
-    ui->dynamicScreen->hide();
+    ui->tilesSelectorScreen->hide();
     ui->settingsScreen->hide();
-    p->hide();
+    ui->parametersScreen->hide();
 }
 
-void MainWindow::showVectorMap(QVector<QString> checkedDist)
-{
+void MainWindow::showVectorMap(QVector<QString> checkedDist) {
     mapOptions->menuAction()->setVisible(true);
     ui->mapScreen->show();
     ui->mapScreen->setMapVector(checkedDist);
-    ui->dynamicScreen->hide();
+    ui->tilesSelectorScreen->hide();
     ui->settingsScreen->hide();
-    p->hide();
+    ui->parametersScreen->hide();
 }
 
-void MainWindow::showStaticMap(QVector<QString> checkedDist)
-{
+void MainWindow::showStaticMap(QVector<QString> checkedDist) {
     mapOptions->menuAction()->setVisible(true);
     ui->mapScreen->show();
     ui->mapScreen->setMapStatic(checkedDist);
-    ui->dynamicScreen->hide();
+    ui->tilesSelectorScreen->hide();
     ui->settingsScreen->hide();
-    p->hide();
-}
-
-void MainWindow::loadVector(Params * par)
-{
-    if (par->mode == VECTOR && par->checkedDist.size() > 0) {
-
-        __TIME__
-
-        QFile f(VECTOR_MAP_PARAMS_FILE);
-        bool same = false;
-        if(f.exists()){
-            f.open(QFile::ReadOnly);
-            QTextStream ss(&f);
-            QStringList sl = ss.readLine().split(" ");
-            QString dist = ss.readLine();
-            dist = ss.readLine();
-            f.close();
-            same = (sl[0] == par->c_lat && sl[1] == par->c_lon && fabs(dist.toDouble() - par->checkedDist[0].toDouble()) <= 1e-7);
-
-        }
-        if(!same && f.open(QFile::WriteOnly)){
-            QTextStream ss(&f);
-            ss<<par->c_lat<<" "<<par->c_lon<<Qt::endl;
-            ss<<OSM_DIR<<Qt::endl;
-            ss<<par->checkedDist[0];
-            f.close();
-        }
-
-        p->setProgressRange(0,0);
-        p->updProgress(-1);
-
-        if(!same){
-
-            OSMLoader * ol = new OSMLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
-            AsterDownloader* ad  = new AsterDownloader(ASTER_DIR, ASTER_URL);
-            AsterParser * ap = new AsterParser;
-            ap->setVectorArgs(TMP_VEC_TEXTURE, ASTER_DIR, ol->getBox());
-            connect(ap, &AsterParser::finished, ol, &OSMLoader::load);
-            connect(ol, &OSMLoader::finished, p, &ParametersWindow::finishProgress);
-
-            Bbox box =  ol->getBox();
-            QVector<int> borders = {int(floor(box.minLon)), int(ceil(box.maxLon)), int(floor(box.minLat)), int(ceil(box.maxLat))};
-            ad->setList(borders);
-            connect(ad, &AsterDownloader::finished, ap, &AsterParser::load);
-            ad->run();
-        }
-        else p->finishProgress();
-    }
-}
-
-void MainWindow::loadStatic(Params *par)
-{
-    if (par->mode==STATIC && par->checkedDist.size() > 0) {
-
-        __TIME__
-        p->setProgressRange(0,0);
-        p->updProgress(-1);
-
-        QFile f(STATIC_MAP_PARAMS_FILE);
-        bool same = false;
-        QString prevStyle;
-        QString style = SettingsScreen::getStatStyle();
-        if(f.exists()){
-            f.open(QFile::ReadOnly);
-            QTextStream ss(&f);
-            QStringList sl = ss.readLine().split(" ");
-            prevStyle = ss.readLine();
-            QString dist = ss.readLine();
-            dist = ss.readLine();
-            f.close();
-            same = (sl[0] == par->c_lat && sl[1] == par->c_lon && (dist == par->checkedDist[0] ||dist.toDouble() > par->checkedDist[0].toDouble()));
-        }
-        bool tilesSame = same && (SettingsScreen::getStatStyle()==prevStyle);
-        if(!tilesSame && f.open(QFile::WriteOnly)){
-            QTextStream ss(&f);
-            ss<<par->c_lat<<" "<<par->c_lon<<Qt::endl;
-            ss<<style<<Qt::endl;
-            ss<<OSM_DIR<<Qt::endl;
-            ss<<par->checkedDist[0];
-            f.close();
-        }
-
-        OSMLoader * ol = new OSMLoader(par->c_lat.toDouble(), par->c_lon.toDouble(), par->checkedDist[0].toDouble());
-        AsterDownloader* asterParser  = new AsterDownloader(ASTER_DIR, ASTER_URL);
-
-        StaticTilesGenerator* tg = new StaticTilesGenerator(par->c_lat.toDouble(), par->c_lon.toDouble(),STATIC_TILE_SIZE, par->checkedDist, tilesSame, style);
-
-        connect(tg, &StaticTilesGenerator::finished, p, &ParametersWindow::finishProgress);
-
-        Bbox box =  ol->getBox();
-        QVector<int> borders = {int(floor(box.minLon)), int(ceil(box.maxLon)), int(floor(box.minLat)), int(ceil(box.maxLat))};
-        asterParser->setList(borders);
-        if(!same){
-            connect(asterParser, &AsterDownloader::finished, ol, &OSMLoader::load);
-            connect(ol, &OSMLoader::finished, tg, &StaticTilesGenerator::load);
-        }else{
-            connect(asterParser, &AsterDownloader::finished, tg, &StaticTilesGenerator::load);
-        }
-        asterParser->run();
-    }
+    ui->parametersScreen->hide();
 }
 
 

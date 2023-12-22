@@ -49,7 +49,10 @@
       <widget class="SettingsScreen" name="settingsScreen" native="true"/>
      </item>
      <item>
-      <widget class="DynamicScreen" name="dynamicScreen" native="true"/>
+      <widget class="ParametersWindow" name="parametersScreen" native="true"/>
+     </item>
+     <item>
+      <widget class="TilesSelectorScreen" name="tilesSelectorScreen" native="true"/>
      </item>
     </layout>
    </widget>
@@ -117,9 +120,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>DynamicScreen</class>
+   <class>TilesSelectorScreen</class>
    <extends>QWidget</extends>
-   <header>dynamicscreen.h</header>
+   <header>tilesselectorscreen.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ParametersWindow</class>
+   <extends>QWidget</extends>
+   <header>parameterswindow.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

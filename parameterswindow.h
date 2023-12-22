@@ -31,14 +31,14 @@ public:
     void setStaticParams();
     void setProgressRange(int min, int max);
     void updProgress(int val);
+public slots:
     void updProgress();
+    void finishProgress();
 signals:
     void parametersLoaded(Params* p);
     void showDynamic(QVector<QString> checkedDist);
     void showVector(QVector<QString> checkedDist);
     void showStatic(QVector<QString> checkedDist);
-public slots:
-    void finishProgress();
 private: 
     Ui::ParametersWindow *ui;
     Mode mode;

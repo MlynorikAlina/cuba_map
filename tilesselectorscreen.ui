@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DynamicScreen</class>
- <widget class="QWidget" name="DynamicScreen">
+ <class>TilesSelectorScreen</class>
+ <widget class="QWidget" name="TilesSelectorScreen">
   <property name="geometry">
    <rect>
     <x>0</x>

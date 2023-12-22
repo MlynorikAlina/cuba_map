@@ -22,11 +22,11 @@ SOURCES += \
     asterparser.cpp \
     clickdetector.cpp \
     dynamicmapgl.cpp \
-    dynamicscreen.cpp \
     dynamictilesgenerator.cpp \
     main.cpp \
     mainwindow.cpp \
     mapgl.cpp \
+    maploader.cpp \
     mapscreen.cpp \
     network.cpp \
     osmloader.cpp \
@@ -50,6 +50,7 @@ SOURCES += \
     tiles/svg_converter/OSMToSVGConverter.cpp \
     tiles/svg_converter/SVGPainter.cpp \
     tilesselector.cpp \
+    tilesselectorscreen.cpp \
     vectormapgl.cpp
 
 HEADERS += \
@@ -57,10 +58,10 @@ HEADERS += \
     asterparser.h \
     clickdetector.h \
     dynamicmapgl.h \
-    dynamicscreen.h \
     dynamictilesgenerator.h \
     mainwindow.h \
     mapgl.h \
+    maploader.h \
     mapscreen.h \
     network.h \
     osmloader.h \
@@ -85,14 +86,15 @@ HEADERS += \
     tiles/svg_converter/OSMToSVGConverter.h \
     tiles/svg_converter/SVGPainter.h \
     tilesselector.h \
+    tilesselectorscreen.h \
     vectormapgl.h
 
 FORMS += \
-    dynamicscreen.ui \
     mainwindow.ui \
     mapscreen.ui \
     parameterswindow.ui \
-    settingsscreen.ui
+    settingsscreen.ui \
+    tilesselectorscreen.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

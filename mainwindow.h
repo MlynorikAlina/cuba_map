@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "maploader.h"
 #include <QMainWindow>
 #include <QMenu>
 #include <parameterswindow.h>
@@ -21,8 +22,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QMenu* mapOptions;
-    ParametersWindow* p;
-
+    MapLoader* mapLoader;
 private slots:
     void showSettingsScreen();
     void showDynamicScreen();
@@ -31,7 +31,5 @@ private slots:
     void showDynamicMap(QVector<QString> checkedDist);
     void showVectorMap(QVector<QString> checkedDist);
     void showStaticMap(QVector<QString> checkedDist);
-    void loadVector(Params * par);
-    void loadStatic(Params * par);
 };
 #endif // MAINWINDOW_H
