@@ -23,7 +23,7 @@ private:
     Params * par;
     TilesSelectorScreen* tileSelector;
     Bbox b;
-    int parsed;
+    QAtomicInt parsed;
     void generateDynamicTiles();
 };
 

@@ -1,20 +1,8 @@
 #include <osmtilesgenerator.h>
 #include "tilesselectorscreen.h"
-#include "settingsscreen.h"
 #include "ui_tilesselectorscreen.h"
-
-
-#include <QProcess>
-#include <math.h>
 #include <params.h>
-#include <stdexcept>
-#include <QThread>
-#include <QMutex>
-#include <QNetworkReply>
-#include <network.h>
-#include <asterdownloader.h>
 #include <QDir>
-#include <dynamictilesgenerator.h>
 
 
 #define OSM_SUFFIX "-latest.osm.pbf"

@@ -3,8 +3,6 @@
 
 #include <QPropertyAnimation>
 #include <QWidget>
-#include <parameterswindow.h>
-#include <qnetworkaccessmanager.h>
 #include <tilesselector.h>
 
 #include <tiles/OverpassFilter.h>
@@ -25,9 +23,6 @@ signals:
     void clicked();
 private:
     Ui::TilesSelectorScreen *ui;
-    QAtomicInt filesToLoad;
-    QAtomicInt filesToLoadTotal;
-    QAtomicInt parsed;
     TilesSelector* tileSelector;
 };
 
