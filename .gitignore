@@ -2,3 +2,4 @@
 *.pbf
 python/venv/
 python/land-polygons/
+../cuba_map/data/planet/

@@ -34,7 +34,7 @@ static time_t stime = time(NULL);
 #define TMP_VEC_TEXTURE "vec_tex.json"
 #define TEMP_FILE_DIR "tmp/"
 #define OSM_DIR "osm/"
-#define PBF_DIR "planet/"
+#define PBF_DIR "../cuba_map/data/planet/"
 #define ASTER_DIR "aster/"
 #define PARSED_ASTER "asterParsed/"
 #define DYNAMIC_MAP_DIR "dynamic_map/"
