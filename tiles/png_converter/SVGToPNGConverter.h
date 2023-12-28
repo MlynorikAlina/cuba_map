@@ -4,19 +4,16 @@
 
 #ifndef MAPDOWNLOADER_SVGTOPNGCONVERTER_H
 #define MAPDOWNLOADER_SVGTOPNGCONVERTER_H
+#include <QString>
 #include <cairo/cairo.h>
 #include <librsvg/rsvg.h>
 
-#include <QSvgRenderer>
-#include <QRect>
 
 
 using namespace std;
 
 class SVGToPNGConverter {
 private:
-    //QSvgRenderer* renderer;
-    //QRect viewport;
     cairo_surface_t *surface;
     cairo_t *cr;
     RsvgRectangle viewport;

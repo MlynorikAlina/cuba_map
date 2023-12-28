@@ -3,41 +3,6 @@
 //
 
 #include "SVGToPNGConverter.h"
-#include <QDir>
-#include <QImage>
-#include <QPainter>
-#include <iostream>
-/*
-void SVGToPNGConverter::convert(const QString &svgFile, const QString &outputDir, const QString &outputFileName) {
-    renderer = new QSvgRenderer(svgFile);
-
-    QDir dir(outputDir);
-    if(!dir.exists())
-        dir.mkpath(dir.absolutePath());
-
-    QImage img(viewport.size(),QImage::Format_RGB32);
-    QPainter p(&img);
-    renderer->setViewBox(viewport);
-    renderer->render(&p);
-    img.save(outputDir+outputFileName);
-}
-
-SVGToPNGConverter::SVGToPNGConverter(double width, double height): viewport(0,0,width, height) {
-
-}
-
-SVGToPNGConverter::~SVGToPNGConverter() {
-}
-
-void SVGToPNGConverter::setViewport(double size) {
-    viewport.setRect(0,0,size,size);
-}
-
-void SVGToPNGConverter::setShift(int shift_x, int shift_y) {
-    viewport.setX(shift_x);
-    viewport.setY(shift_y);
-}
-*/
 
 #include <librsvg/rsvg.h>
 #include <filesystem>
