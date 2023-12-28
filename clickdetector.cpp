@@ -10,7 +10,6 @@ ClickDetector::ClickDetector()
 bool ClickDetector::onLine(QVector<double> &v, double x, double y)
 {
     double r = 5;
-    double eps = 1e-3;
     for(int i=2; i<v.size(); i+=2){
         double k, p;
         if(v[i-2] == v[i])
@@ -42,7 +41,7 @@ double ClickDetector::getCosA(double a_x, double a_y, double b_x, double b_y)
 
 bool ClickDetector::inPolygon(QVector<double> &v, double x, double y)
 {
-    double eps = 1e-3;
+    double eps = 1e-5;
     double alph = 0;
     for(int i=2; i<v.size(); i+=2){
         double a_x = v[i-2]-x;

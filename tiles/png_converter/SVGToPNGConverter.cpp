@@ -3,17 +3,53 @@
 //
 
 #include "SVGToPNGConverter.h"
+#include <QDir>
+#include <QImage>
+#include <QPainter>
+#include <iostream>
+/*
+void SVGToPNGConverter::convert(const QString &svgFile, const QString &outputDir, const QString &outputFileName) {
+    renderer = new QSvgRenderer(svgFile);
+
+    QDir dir(outputDir);
+    if(!dir.exists())
+        dir.mkpath(dir.absolutePath());
+
+    QImage img(viewport.size(),QImage::Format_RGB32);
+    QPainter p(&img);
+    renderer->setViewBox(viewport);
+    renderer->render(&p);
+    img.save(outputDir+outputFileName);
+}
+
+SVGToPNGConverter::SVGToPNGConverter(double width, double height): viewport(0,0,width, height) {
+
+}
+
+SVGToPNGConverter::~SVGToPNGConverter() {
+}
+
+void SVGToPNGConverter::setViewport(double size) {
+    viewport.setRect(0,0,size,size);
+}
+
+void SVGToPNGConverter::setShift(int shift_x, int shift_y) {
+    viewport.setX(shift_x);
+    viewport.setY(shift_y);
+}
+*/
+
 #include <librsvg/rsvg.h>
 #include <filesystem>
 #include <iostream>
 
-void SVGToPNGConverter::convert(const string &svgFile, const string &outputDir, const string &outputFileName) {
+void SVGToPNGConverter::convert(const QString &svgFile, const QString &outputDir, const QString &outputFileName) {
     GError *error = NULL;
-    GFile *file = g_file_new_for_path (svgFile.c_str());
+    GFile *file = g_file_new_for_path (svgFile.toStdString().c_str());
     RsvgHandle *handle = rsvg_handle_new_from_gfile_sync (file, RSVG_HANDLE_FLAGS_NONE, NULL, &error);
 
-    if(!filesystem::exists(outputDir))
-        filesystem::create_directories(outputDir);
+    if(!filesystem::exists(outputDir.toStdString()))
+        filesystem::create_directories(outputDir.toStdString());
 
     if (!handle)
     {
@@ -30,7 +66,7 @@ void SVGToPNGConverter::convert(const string &svgFile, const string &outputDir, 
 
     /* Write a PNG file */
 
-    if (cairo_surface_write_to_png (surface, (outputDir + outputFileName).c_str()) != CAIRO_STATUS_SUCCESS)
+    if (cairo_surface_write_to_png (surface, (outputDir + outputFileName).toStdString().c_str()) != CAIRO_STATUS_SUCCESS)
     {
         printf ("could not write output file");
         exit (1);
@@ -45,10 +81,10 @@ SVGToPNGConverter::SVGToPNGConverter(double width, double height) {
     cr = cairo_create (surface);
 
     viewport = {
-            .x = 0.0,
-            .y = 0.0,
-            .width = width,
-            .height = height,
+        .x = 0.0,
+        .y = 0.0,
+        .width = width,
+        .height = height,
     };
 
 }
@@ -60,10 +96,10 @@ SVGToPNGConverter::~SVGToPNGConverter() {
 
 void SVGToPNGConverter::setViewport(double size) {
     viewport = {
-            .x = 0.0,
-            .y = 0.0,
-            .width = size,
-            .height = size,
+        .x = 0.0,
+        .y = 0.0,
+        .width = size,
+        .height = size,
     };
 }
 

@@ -5,8 +5,6 @@
 #include <QDir>
 
 
-#define OSM_SUFFIX "-latest.osm.pbf"
-
 TilesSelectorScreen::TilesSelectorScreen(QWidget *parent)
     : QWidget(parent), ui(new Ui::TilesSelectorScreen) {
     ui->setupUi(this);
@@ -16,7 +14,7 @@ TilesSelectorScreen::TilesSelectorScreen(QWidget *parent)
     tileSelector->setFocusPolicy(Qt::StrongFocus);
     QDir dir(DYNAMIC_MAP_DIR);
     if(!dir.exists())
-        dir.mkpath(DYNAMIC_MAP_DIR);
+        dir.mkpath("./");
     connect(ui->parseButton, &QPushButton::clicked, this, &TilesSelectorScreen::hide);
     connect(ui->parseButton, &QPushButton::clicked, this, &TilesSelectorScreen::clicked);
 }

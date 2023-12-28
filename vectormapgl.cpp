@@ -221,7 +221,6 @@ void VectorMapGL::loadData()
 
 void VectorMapGL::loadTexture(QString file)
 {
-    //FIXME::
     QFile f(file);
     QString s;
     f.open(QIODevice::ReadOnly);

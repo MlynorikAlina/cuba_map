@@ -4,7 +4,10 @@
 
 #include <vector>
 #include "SVGPainter.h"
+#include <QFile>
 #include <iostream>
+#include <qdebug.h>
+#include <qstring.h>
 #include <valarray>
 
 #define PI 3.14159265
@@ -18,13 +21,13 @@ SVGPainter::SVGPainter(const string &SVGFileName, const string &CSSFileName, int
                                                                                                       HEIGHT(height),
                                                                                                       cssFileName(
                                                                                                               CSSFileName) {
-    pathToCSSFile = filesystem::relative(CSSFileName, filesystem::path(SVGFileName).parent_path());
+    pathToCSSFile = filesystem::absolute(cssFileName);
+    cerr<<pathToCSSFile.string()<<endl;
     svgFile.open(SVGFileName);
-    cssFile.open(CSSFileName, ios_base::app);
+    cssFile.open(cssFileName, ios_base::app);
 }
 
 void SVGPainter::start() {
-
     if (cssFile.is_open()) {
         svgFile << R"(<?xml-stylesheet type="text/css" href=)" << pathToCSSFile << "?>" << endl;
     }

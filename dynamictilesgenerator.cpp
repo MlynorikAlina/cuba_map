@@ -88,7 +88,7 @@ void DynamicTilesGenerator::run()
                                 cv->draw(PATTERNS_FILE, 1);
                             }
                             png.setShift(shiftx, shifty);
-                            png.convert(svgFile.toStdString(), pngDir.toStdString(), pngFile.toStdString());
+                            png.convert(svgFile, pngDir, pngFile);
                         }
                     }
                 }

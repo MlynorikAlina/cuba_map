@@ -48,7 +48,7 @@ void StaticTilesGenerator::run()
             OSMToSVGConverter cv(TMP_STAT_OSM, TMP_STAT_TEXTURE, *filter, string(STYLE_DIR) + "test.svg", style.toStdString(), border, size, size);
             cv.draw(PATTERNS_FILE, 1);
             SVGToPNGConverter png(size, size);
-            png.convert(string(STYLE_DIR) + "test.svg", STATIC_MAP_DIR, dist.toStdString() + ".png");
+            png.convert(QString(STYLE_DIR) + "test.svg", STATIC_MAP_DIR, dist + ".png");
         }
     }
     __TIME__
