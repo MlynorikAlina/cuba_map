@@ -4,7 +4,6 @@
 
 ClickDetector::ClickDetector()
 {
-
 }
 
 bool ClickDetector::onLine(QVector<double> &v, double x, double y)

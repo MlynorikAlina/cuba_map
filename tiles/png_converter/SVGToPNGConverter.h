@@ -10,8 +10,6 @@
 
 
 
-using namespace std;
-
 class SVGToPNGConverter {
 private:
     cairo_surface_t *surface;

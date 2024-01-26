@@ -45,10 +45,10 @@ void StaticTilesGenerator::run()
             p.setStaticArgs(TMP_STAT_TEXTURE, ASTER_DIR, size, border);
             p.exec();
 
-            OSMToSVGConverter cv(TMP_STAT_OSM, TMP_STAT_TEXTURE, *filter, string(STYLE_DIR) + "test.svg", style.toStdString(), border, size, size);
+            OSMToSVGConverter cv(TMP_STAT_OSM, TMP_STAT_TEXTURE, *filter, std::string(STATIC_STYLE_DIR) + "test.svg", style.toStdString(), border, size, size);
             cv.draw(PATTERNS_FILE, 1);
             SVGToPNGConverter png(size, size);
-            png.convert(QString(STYLE_DIR) + "test.svg", STATIC_MAP_DIR, dist + ".png");
+            png.convert(QString(STATIC_STYLE_DIR) + "test.svg", STATIC_MAP_DIR, dist + ".png");
         }
     }
     __TIME__

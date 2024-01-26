@@ -7,6 +7,8 @@
 #include <iostream>
 #include "OSMFileParser.h"
 
+using namespace std;
+
 OSMFileParser::OSMFileParser(const string &fileName, double xScale, double yScale) :  xScale(xScale),
                                                                                    yScale(yScale) {
     file.open(fileName);

@@ -32,8 +32,8 @@ void OSMTilesGenerator::run()
         for(int j = PLANET_TILES_STEP*floor(list[0]/PLANET_TILES_STEP); j<list[1];j+=PLANET_TILES_STEP){
             QString n;
             QTextStream s(&n);
-            s << "planet/" << i + 90 << "_" << j + 180 << ".osm.pbf";
-            parseOsm(max(list[2],i), max(list[0],j), min(list[3],i+PLANET_TILES_STEP), min(list[1],j+PLANET_TILES_STEP), n);
+            s << WORLD_PBF_DIR << i + 90 << "_" << j + 180 << ".osm.pbf";
+            parseOsm(std::max(list[2],i), std::max(list[0],j), std::min(list[3],i+PLANET_TILES_STEP), std::min(list[1],j+PLANET_TILES_STEP), n);
         }
     dir.rmdir(dir.absolutePath());
 }

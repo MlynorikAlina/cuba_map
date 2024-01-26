@@ -4,9 +4,11 @@
 
 #include <QFile>
 
-StaticMapGL::StaticMapGL():
+StaticMapGL::StaticMapGL(QWidget* parent):
     tex_c({{0,0},{0,1},{1,1},{1,0}})
 {
+    if(parent)
+        setParent(parent);
 }
 
 StaticMapGL::~StaticMapGL()

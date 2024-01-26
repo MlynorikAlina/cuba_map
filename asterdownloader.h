@@ -17,7 +17,7 @@ signals:
     void finished();
 private:
     void downloadAster(int lat, int lon);
-    static void unzipFile(const std::string &zipArchive, const std::string &fileName, const std::string &outputFile);
+    static void unzipFile(QString &zipArchive, QString &fileName, QString &outputFile);
     void unzip(QNetworkReply *rep);
 
 

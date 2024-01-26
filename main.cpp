@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QFile>
 #include <QProcess>
+#include <QSslSocket>
 #include <params.h>
 
 int main(int argc, char *argv[])
@@ -14,14 +15,15 @@ int main(int argc, char *argv[])
     //w.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     //w.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     //w.setFixedSize(QSize(1024,768)); // BREAKS COMBOBOX!!!!
-
-    //w.setMaximumWidth(1024);
+    w.resize(W_WIDTH+5,W_HEIGHT+50);
+    //w.setMaximumWidth(450);
     //w.setFixedHeight(768);
 
     //w.setFixedWidth(900);
     //w.setFixedHeight(768);
-    //w.setMaximumHeight(901);
+   // w.setMaximumHeight(450);
     //w.setMinimumHeight(900);
+    qInfo() << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
     w.show();
     w.setWindowTitle(" ");
     return a.exec();

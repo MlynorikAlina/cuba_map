@@ -13,8 +13,8 @@ OSMLoader::OSMLoader(double clat, double clon, double max_dist, OSMParserMode mo
 {
     double dlat = GeoInfo::km2long(max_dist,clat);
     double dlon = GeoInfo::km2lat(max_dist);
-    double add_dlat = min(0.5, dlat/2);
-    double add_dlon = min(0.5, dlon/2);
+    double add_dlat = std::min(0.5, dlat/2);
+    double add_dlon = std::min(0.5, dlon/2);
     if(mode!=_VECTOR)
         b.setBox(clat - dlat - add_dlat, clon - dlon - add_dlon, clat + dlat + add_dlat, clon + dlon + add_dlon);
     else
@@ -49,7 +49,7 @@ void OSMLoader::run()
     uint count = 0;
     for(int i = floor((b.minLat)/PLANET_TILES_STEP)*PLANET_TILES_STEP; i<=floor((b.maxLat)/PLANET_TILES_STEP)*PLANET_TILES_STEP;i+=PLANET_TILES_STEP)
         for(int j = floor((b.minLon)/PLANET_TILES_STEP)*PLANET_TILES_STEP; j<=floor((b.maxLon)/PLANET_TILES_STEP)*PLANET_TILES_STEP;j+=PLANET_TILES_STEP){
-            parsePBF(box,PBF_DIR + QString::number(i + 90) + "_" + QString::number(j + 180) + ".osm.pbf", "tf" + QString::number(count) + ".osm");
+            parsePBF(box, WORLD_PBF_DIR + QString::number(i + 90) + "_" + QString::number(j + 180) + ".osm.pbf", "tf" + QString::number(count) + ".osm");
             count++;
         }
 
@@ -71,7 +71,7 @@ int OSMLoader::getExitCode() const
 
 void OSMLoader::setDefaultOutFile()
 {
-    if(mode==_STATIC){
+    if(mode!=_VECTOR){
         tempOsm = TMP_STAT_OSM;
     }else{
         tempOsm = TMP_VEC_OSM;
@@ -105,14 +105,14 @@ void OSMLoader::parsePBF(QString b, QString inPBFFile, QString outFile)
 void OSMLoader::startProc(QStringList args)
 {
     QProcess proc;
-    proc.start("osmconvert", args);
+    proc.start(OSMCONVERT, args);
     if (!proc.waitForStarted(-1) || !proc.waitForFinished(-1)) {
         return ;
     }
 
     exitCode = proc.exitCode();
     if (exitCode != 0)
-        qDebug() << proc.readAllStandardError();
+        qInfo() << proc.readAllStandardError();
 }
 
 QString OSMLoader::getBoxStr()

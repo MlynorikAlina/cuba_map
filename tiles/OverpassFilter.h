@@ -9,8 +9,6 @@
 #ifndef MAPDOWNLOADER_OVERPASSFILTER_H
 #define MAPDOWNLOADER_OVERPASSFILTER_H
 
-using namespace std;
-
 struct Bbox {
     double minLon;
     double minLat;
@@ -36,24 +34,24 @@ private:
     bool _isRound;
     bool displayNoTags;
 
-    set<mf::MapFeature> includedFeatures;
-    set<mf::MapFeature> excludedFeatures;
-    map<mf::MapFeature, set<string> > includedFeatureOptions;
-    map<mf::MapFeature, set<string> > excludedFeatureOptions;
+    std::set<mf::MapFeature> includedFeatures;
+    std::set<mf::MapFeature> excludedFeatures;
+    std::map<mf::MapFeature, std::set<std::string> > includedFeatureOptions;
+    std::map<mf::MapFeature, std::set<std::string> > excludedFeatureOptions;
 
-    string to_string(string additional);
+    std::string to_string(std::string additional);
 
-    static void printFeatureOptions(ostream &os, const set<string>& opt);
+    static void printFeatureOptions(std::ostream &os, const std::set<std::string>& opt);
 public:
     OverpassFilter();
 
-    void includeFeatures(const set<mf::MapFeature>& fs);
+    void includeFeatures(const std::set<mf::MapFeature>& fs);
 
-    void excludeFeatures(const set<mf::MapFeature>& fs);
+    void excludeFeatures(const std::set<mf::MapFeature>& fs);
 
-    void includeFeatureOptions(mf::MapFeature f, set<string> fOpt);
+    void includeFeatureOptions(mf::MapFeature f, std::set<std::string> fOpt);
 
-    void excludeFeatureOptions(mf::MapFeature  f, set<string> fOpt);
+    void excludeFeatureOptions(mf::MapFeature  f, std::set<std::string> fOpt);
 
     void setBbox(double minLon, double minLat, double maxLon, double maxLat);
 
@@ -71,15 +69,15 @@ public:
 
     const RoundArea &getArea() const;
 
-    const set<map_features::MapFeature> &getIncludedFeatures() const;
+    const std::set<map_features::MapFeature> &getIncludedFeatures() const;
 
-    const set<map_features::MapFeature> &getExcludedFeatures() const;
+    const std::set<map_features::MapFeature> &getExcludedFeatures() const;
 
-    const map<map_features::MapFeature, set<string>> &getIncludedFeatureOptions() const;
+    const std::map<map_features::MapFeature, std::set<std::string>> &getIncludedFeatureOptions() const;
 
-    const map<map_features::MapFeature, set<string>> &getExcludedFeatureOptions() const;
+    const std::map<map_features::MapFeature, std::set<std::string>> &getExcludedFeatureOptions() const;
 
-    string getQuery();
+    std::string getQuery();
 };
 
 

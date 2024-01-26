@@ -35,6 +35,7 @@ public slots:
     void updProgress();
     void finishProgress();
 signals:
+    void cancel();
     void parametersLoaded(Params* p);
     void showDynamic(QVector<QString> checkedDist);
     void showVector(QVector<QString> checkedDist);

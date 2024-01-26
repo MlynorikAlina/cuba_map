@@ -55,6 +55,10 @@
       <widget class="TilesSelectorScreen" name="tilesSelectorScreen" native="true"/>
      </item>
     </layout>
+    <zorder>settingsScreen</zorder>
+    <zorder>mapScreen</zorder>
+    <zorder>parametersScreen</zorder>
+    <zorder>tilesSelectorScreen</zorder>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

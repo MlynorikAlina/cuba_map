@@ -5,16 +5,16 @@
 #include "SVGToPNGConverter.h"
 
 #include <librsvg/rsvg.h>
-#include <filesystem>
+#include <QDir>
 #include <iostream>
 
 void SVGToPNGConverter::convert(const QString &svgFile, const QString &outputDir, const QString &outputFileName) {
     GError *error = NULL;
     GFile *file = g_file_new_for_path (svgFile.toStdString().c_str());
     RsvgHandle *handle = rsvg_handle_new_from_gfile_sync (file, RSVG_HANDLE_FLAGS_NONE, NULL, &error);
-
-    if(!filesystem::exists(outputDir.toStdString()))
-        filesystem::create_directories(outputDir.toStdString());
+    QDir dir(outputDir);
+    if(!dir.exists())
+       dir.mkpath("./");
 
     if (!handle)
     {

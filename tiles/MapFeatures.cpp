@@ -2,6 +2,7 @@
 // Created by alina-mlynorik on 7/27/23.
 //
 #include "MapFeatures.h"
+using namespace std;
 
 string map_features::to_string(map_features::MapFeature f) {
 

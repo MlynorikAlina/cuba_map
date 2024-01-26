@@ -10,38 +10,36 @@
 #include "OSMData.h"
 #include <list>
 
-using namespace std;
-
 
 
 class OSMParse {
 private:
-    ifstream osmFile;
+    std::ifstream osmFile;
     pugi::xml_document doc;
     pugi::xml_node osmNode;
     OverpassFilter filter;
 
-    set<string> features;
+    std::set<std::string> features;
 
-    bool isIncluded(string k, string v);
+    bool isIncluded(std::string k, std::string v);
 public:
-    explicit OSMParse(const string &osmFileName, const OverpassFilter& filter);
+    explicit OSMParse(const std::string &osmFileName, const OverpassFilter& filter);
     explicit OSMParse(const OverpassFilter& filter);
 
-    void setOsmFile(const string &osmFileName);
+    void setOsmFile(const std::string &osmFileName);
 
     void setFilterBbox(double minLon, double minLat, double maxLon, double maxLat);
     Bbox getFilterBbox();
 
     //TODO::descriptor
-    map<string, NodeAttributes> getNodes();
-    list<pair<string, WayData>>  getWays(const map<string, NodeAttributes>& nodes);
-    void appendNodes(map<string, NodeAttributes>& nodes);
-    void appendWays(list<pair<string, WayData>>& ways, const map<string, NodeAttributes>& nodes);
-    void appendRel(map<string, RelData> &rel);
+    std::map<std::string, NodeAttributes> getNodes();
+    std::list<std::pair<std::string, WayData>>  getWays(const std::map<std::string, NodeAttributes>& nodes);
+    void appendNodes(std::map<std::string, NodeAttributes>& nodes);
+    void appendWays(std::list<std::pair<std::string, WayData>>& ways, const std::map<std::string, NodeAttributes>& nodes);
+    void appendRel(std::map<std::string, RelData> &rel);
 };
 
 struct wc {
-    bool operator()(const pair<string, WayData> &a, const pair<string, WayData> &b);
+    bool operator()(const std::pair<std::string, WayData> &a, const std::pair<std::string, WayData> &b);
 };
 #endif //MAPDOWNLOADER_OSMPARSER_H

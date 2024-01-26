@@ -29,11 +29,11 @@ void AsterDownloader::unzip(QNetworkReply *rep) {
     QString zfn2(pref + ss + "_dem.tif");
     QString outf(asterDir + ss + ".tif");
 
-    unzipFile(s.toStdString(), zfn1.toStdString(), temp.toStdString());
-    unzipFile(temp.toStdString(), zfn2.toStdString(), outf.toStdString());
+    unzipFile(s, zfn1, temp);
+    unzipFile(temp, zfn2, outf);
 
-    QFile::remove(temp);
-    QFile::remove(s);
+    qInfo()<<temp<<" "<<QFile::remove(temp)<<" "<<QFile::permissions(temp);
+    qInfo()<<s<<" "<<QFile(s).remove();
     emit fileDownloaded();
     delete rep;
 }
@@ -46,26 +46,6 @@ void AsterDownloader::checkFinished()
 }
 
 void AsterDownloader::setList(const QVector<int> &newList) { list = newList; }
-
-/*void AsterParser::parseFiles(QString fileName) {
-
-
-    QString size = QString::number(TILE_SIZE);
-    QStringList args;
-    if (!dir.exists())
-        dir.mkpath(dir.path());
-    args << asterDir << size << dir.path() + "/texture/";
-    QProcess proc;
-    proc.start("asterPy/asterTexture", args);
-    if (!proc.waitForStarted() || !proc.waitForFinished()) {
-        return;
-    }
-    if (proc.exitCode() != 0)
-        qDebug() << proc.readAllStandardError();
-
-    emit parseComplete();
-}*/
-
 
 void AsterDownloader::run() {
     filesTotal = (list[1] - list[0])*(list[3] - list[2]);
@@ -113,21 +93,21 @@ void AsterDownloader::downloadAster(int lat, int lon) {
 }
 
 zip_uint64_t BUF_SIZE = 1024;
-void AsterDownloader::unzipFile(const std::string &zipArchive,
-                            const std::string &fileName,
-                            const std::string &outputFile) {
-    if (QFile::exists(QString::fromStdString(zipArchive))) {
+void AsterDownloader::unzipFile(QString &zipArchive,
+                            QString &fileName,
+                            QString &outputFile) {
+    if (QFile::exists(zipArchive)) {
         zip_t *za;
         int err;
-        if ((za = zip_open(zipArchive.c_str(), ZIP_RDONLY, &err)) != NULL) {
+        if ((za = zip_open(zipArchive.toStdString().c_str(), ZIP_RDONLY, &err)) != NULL) {
             zip_error_t error;
             zip_error_init_with_code(&error, err);
-            zip_file_t *f = zip_fopen(za, fileName.c_str(), 0);
+            zip_file_t *f = zip_fopen(za, fileName.toStdString().c_str(), 0);
             if (f != NULL) {
                 struct zip_stat ist;
                 zip_stat_init(&ist);
-                zip_stat(za, fileName.c_str(), 0, &ist);
-                std::ofstream of(outputFile.c_str(), std::ios::binary);
+                zip_stat(za, fileName.toStdString().c_str(), 0, &ist);
+                std::ofstream of(outputFile.toStdString().c_str(), std::ios::binary);
                 while(ist.size>0){
                     zip_uint64_t size = std::min(BUF_SIZE, ist.size);
                     char *contents = new char[size];
@@ -138,8 +118,8 @@ void AsterDownloader::unzipFile(const std::string &zipArchive,
                 }
                 of.close();
             }
-            delete f;
+            zip_fclose(f);
         }
-        delete za;
+        zip_close(za);
     }
 }

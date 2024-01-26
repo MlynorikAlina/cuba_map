@@ -2,7 +2,6 @@
 #include "params.h"
 #include "qdebug.h"
 #include "qheaderview.h"
-#include "ui_settingsscreen.h"
 
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -12,6 +11,7 @@
 #include <QJsonDocument>
 #include <QListView>
 #include <QRadioButton>
+#include <QScrollArea>
 #include <QStandardItemModel>
 #include <QTabWidget>
 #include <QTableView>
@@ -25,17 +25,22 @@ QVector<QString> SettingsScreen::themeStat({STATIC_STYLE, DARK_STATIC_STYLE, MIN
 
 
 SettingsScreen::SettingsScreen(QWidget *parent)
-    : QWidget(parent), ui(new Ui::SettingsScreen) {
-    ui->setupUi(this);
-    setLayout(new QVBoxLayout);
+    : QWidget(parent){
+    w = new QScrollArea(this);
+    w->setLayout(new QVBoxLayout);
+    w->setMaximumWidth(W_WIDTH);
+    w->resize(QSize(W_WIDTH,W_HEIGHT-22));
+    //move(1,1);
+    //setBaseSize(QSize(W_WIDTH, W_HEIGHT));
+
     QGroupBox *filterGB = new QGroupBox("Filter");
-    layout()->addWidget(filterGB);
-    layout()->setAlignment(Qt::AlignTop);
+    w->layout()->addWidget(filterGB);
+    w->layout()->setAlignment(Qt::AlignTop);
     filterGB->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     filterGB->setMaximumHeight(0);
 
     QGroupBox *themeGB = new QGroupBox("Theme");
-    layout()->addWidget(themeGB);
+    w->layout()->addWidget(themeGB);
     themeGB->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     themeGB->setLayout(new QVBoxLayout);
     theme.append(new QRadioButton("default"));
@@ -71,7 +76,6 @@ SettingsScreen::SettingsScreen(QWidget *parent)
         tab->setShowGrid(false);
         tab->horizontalHeader()->hide();
         tab->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        ;
         tab->verticalHeader()->hide();
 
         QStandardItemModel *model = new QStandardItemModel(tab);
@@ -100,7 +104,7 @@ SettingsScreen::SettingsScreen(QWidget *parent)
         if (l.size() > 0)
             model->appendColumn(l);
 
-        filterGB->setMaximumHeight(max(tab->height(), filterGB->maximumHeight()));
+        filterGB->setMaximumHeight(std::max(tab->height(), filterGB->maximumHeight()));
 
         tab->setModel(model);
 
@@ -129,12 +133,12 @@ SettingsScreen::~SettingsScreen() {
     QJsonDocument doc(jobject);
     f.write(doc.toJson());
     f.close();
-    delete ui;
+    delete w;
 }
 
 OverpassFilter *SettingsScreen::getFilter(int dist) {
     OverpassFilter *f = new OverpassFilter;
-    set<map_features::MapFeature> include;
+    std::set<map_features::MapFeature> include;
     QMapIterator<QString, bool> it = h_filter[dist];
     while (it.hasNext()) {
         it.next();

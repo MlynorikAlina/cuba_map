@@ -43,8 +43,8 @@ void AsterParser::run()
     }
     QString err = proc->readAllStandardError();
     if(err.size()>0)
-        qDebug()<<err;
-    //qDebug()<<proc->readAllStandardOutput();
+        qInfo()<<err;
+    //qInfo()<<proc->readAllStandardOutput();
 }
 
 void AsterParser::exec()

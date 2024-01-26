@@ -1,6 +1,8 @@
 #include "network.h"
 
 #include <QFile>
+#include <QVariant>
+#include <QDebug>
 
 Network::Network()
 {
@@ -32,5 +34,10 @@ void Network::onDownload(QNetworkReply* rep) {
 
 void Network::closeConnection(QNetworkReply *rep)
 {
+/*   QVariant status_code = rep->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+
+        QString status = status_code.toString(); // or status_code.toInt();
+        qInfo() << status;
+*/
     rep->deleteLater();
 }

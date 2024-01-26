@@ -23,6 +23,7 @@ void MapLoader::loadVector(Params *par)
     if (par->mode == VECTOR && par->checkedDist.size() > 0) {
 
         __TIME__
+
         QFile f(VECTOR_MAP_PARAMS_FILE);
         bool same = false;
         if (f.exists()) {
@@ -50,6 +51,7 @@ void MapLoader::loadVector(Params *par)
             OSMLoader *ol =
                 new OSMLoader(par->c_lat.toDouble(), par->c_lon.toDouble(),
                               par->checkedDist[0].toDouble());
+            ol->setTempOsm(TMP_VEC_OSM);
             AsterDownloader *ad = new AsterDownloader(ASTER_DIR, ASTER_URL);
             AsterParser *ap = new AsterParser;
             ap->setVectorArgs(TMP_VEC_TEXTURE, ASTER_DIR, ol->getBox());
@@ -143,7 +145,7 @@ void MapLoader::loadDynamic(Params *par)
         int osmCount=(l[3]-l[2])*(l[1]-l[0]);
         int filesToLoadTotal = (1+(par->checkedDist.size() + 1)/(TILE_STEP*TILE_STEP)) * osmCount;
         parsed=0;
-        qDebug()<<"total:"<<filesToLoadTotal;
+        qInfo()<<"total:"<<filesToLoadTotal;
         p->setProgressRange(0,filesToLoadTotal);
 
         QDir d(OSM_DIR);

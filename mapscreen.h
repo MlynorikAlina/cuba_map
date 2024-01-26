@@ -8,9 +8,6 @@
 #include <staticmapgl.h>
 #include <vectormapgl.h>
 
-namespace Ui {
-class MapScreen;
-}
 
 class MapScreen : public QWidget
 {
@@ -34,7 +31,6 @@ private:
     DynamicMapGL* dynamicMap;
     VectorMapGL * vectorMap;
     StaticMapGL * staticMap;
-    Ui::MapScreen *ui;
 };
 
 #endif // MAPSCREEN_H

@@ -11,22 +11,22 @@ using namespace map_features;
 static time_t stime = time(NULL);
 
 #define __TIME__ {\
-    qDebug()<<__PRETTY_FUNCTION__<<" "<<time(NULL) - stime;\
+    qInfo()<<__PRETTY_FUNCTION__<<" "<<time(NULL) - stime;\
     stime = time(NULL);\
 }
 
 #define TILE_STEP  0.5
 #define TILE_STEP_PREC  1
 
-//../cuba_map/data/static_style/patterns.txt
+//../common/styles/static_style/patterns.txt
 #define PATTERNS_FILE ""
-#define STYLE_DIR "../cuba_map/data/static_style/"
-#define STATIC_STYLE  "../cuba_map/data/static_style/styles/def_100km.css"
-#define VEC_STYLE "../cuba_map/data/vector_style/def_style.json"
-#define DARK_STATIC_STYLE  "../cuba_map/data/static_style/styles/dark_100km.css"
-#define DARK_VEC_STYLE "../cuba_map/data/vector_style/dark_style.json"
-#define MIN_COL_STATIC_STYLE  "../cuba_map/data/static_style/styles/min_100km.css"
-#define MIN_COL_VEC_STYLE "../cuba_map/data/vector_style/min_style.json"
+#define STATIC_STYLE_DIR "../common/styles/static_style/"
+#define STATIC_STYLE  "../common/styles/static_style/styles/def_100km.css"
+#define VEC_STYLE "../common/styles/vector_style/def_style.json"
+#define DARK_STATIC_STYLE  "../common/styles/static_style/styles/dark_100km.css"
+#define DARK_VEC_STYLE "../common/styles/vector_style/dark_style.json"
+#define MIN_COL_STATIC_STYLE  "../common/styles/static_style/styles/min_100km.css"
+#define MIN_COL_VEC_STYLE "../common/styles/vector_style/min_style.json"
 
 #define TMP_STAT_OSM "stat.osm"
 #define TMP_STAT_TEXTURE "stat_tex.json"
@@ -34,25 +34,26 @@ static time_t stime = time(NULL);
 #define TMP_VEC_TEXTURE "vec_tex.json"
 #define TEMP_FILE_DIR "tmp/"
 #define OSM_DIR "osm/"
-#define PBF_DIR "../cuba_map/data/planet/"
 #define ASTER_DIR "aster/"
 #define PARSED_ASTER "asterParsed/"
 #define DYNAMIC_MAP_DIR "dynamic_map/"
 #define STATIC_MAP_DIR "static_map/"
 
-#define DYNAMIC_ASTER_PARSER_PY "../cuba_map/python/dparser.py"
-#define VEC_ASTER_PARSER_PY "../cuba_map/python/vparser.py"
-#define STAT_ASTER_PARSER_PY "../cuba_map/python/sparser.py"
-#define PYTHON "../world_map/python/venv/bin/python"
+#define DYNAMIC_ASTER_PARSER_PY "../common/python/dparser.py"
+#define VEC_ASTER_PARSER_PY "../common/python/vparser.py"
+#define STAT_ASTER_PARSER_PY "../common/python/sparser.py"
+#define PYTHON "../common/python/venv/bin/python"
 
 #define ASTER_URL "https://gdemdl.aster.jspacesystems.or.jp/download/"
 
-#define WORLD_MAP_PNG "../cuba_map/data/cuba.png"
-#define WORLD_PBF_DIR "../cuba_map/planet/"
+#define WORLD_MAP_PNG "../cuba_map_data/cuba.png"
+#define WORLD_PBF_DIR "../cuba_map_data/"
 
 #define VECTOR_MAP_PARAMS_FILE "vec_params.txt"
 #define STATIC_MAP_PARAMS_FILE "stat_params.txt"
 #define FONT_LOC "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+
+#define OSMCONVERT "osmconvert"
 
 #define BACKGROUND_COLOR_GL 0x00,0x00,0x02,0x00
 #define MIN_GRID_LINES_COUNT 2
@@ -60,8 +61,10 @@ static time_t stime = time(NULL);
 #define PLANET_TILES_STEP 5
 #define TEXT_SIZE 12
 #define GRID_COLOR 0x96,0x96,0x96
-#define DEFAULT_TILE_SIZE 450
+#define DEFAULT_TILE_SIZE 900
 #define STATIC_TILE_SIZE 900
+#define W_WIDTH 900
+#define W_HEIGHT 900
 
 static QHash<QString, int> dynamicTilesPrec = {{"100", 0},
                                         {"50", 1}};

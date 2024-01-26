@@ -8,14 +8,12 @@
 #include <tiles/OverpassFilter.h>
 #include "../svg_converter/SVGPainter.h"
 
-using namespace std;
-
 class CoastlinePainter {
 private:
-    ifstream texture;
+    std::ifstream texture;
     Bbox box;
 public:
-    explicit CoastlinePainter(const string& textureFile);
+    explicit CoastlinePainter(const std::string& textureFile);
     void draw(SVGPainter *painter, int width, int height);
     const Bbox &getBox() const;
 };

@@ -5,12 +5,18 @@
 #include "EleContoursProcessor.h"
 #include "../svg_converter/SVGPainter.h"
 #include "GrahamMVO.h"
-
+#include <QDir>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <cmath>
-#include <jsoncpp/json/json.h>
+#include <sstream>
+#include <iomanip>
+
+using namespace std;
 
 EleContoursProcessor::EleContoursProcessor(const std::string &jsonFile) {
-    if (filesystem::exists(jsonFile))
+    if (QDir().exists(QString::fromStdString(jsonFile)))
         f.open(jsonFile);
 }
 
@@ -108,19 +114,17 @@ void EleContoursProcessor::drawInnerContour(SVGPainter &painter,
 
 void EleContoursProcessor::draw(SVGPainter &painter, int &width, int &height) {
     while (!f.eof()) {
-        Json::Value v;
         string s;
         std::getline(f, s);
         if (s.size() > 0) {
-            stringstream ssv(s);
-            ssv >> v;
-            double ele = v.get("ele", 0.).asDouble();
+            QJsonObject o = QJsonDocument::fromJson(QString::fromStdString(s).toUtf8()).object();
+            double ele = o["ele"].toDouble();
             std::vector<Point> MVO;
 
-            Json::Value coordinates = v["coordinates"];
+            QJsonArray coordinates = o["coordinates"].toArray();
             for (int i = 0; i < coordinates.size(); ++i) {
-                Json::Value xy = coordinates[i];
-                MVO.emplace_back(xy[0].asDouble(), xy[1].asDouble());
+                QJsonArray xy = coordinates[i].toArray();
+                MVO.emplace_back(xy[0].toDouble(), xy[1].toDouble());
             }
             if (MVO.size() > 5)
                 drawInnerContour(painter, MVO, width, height, ele);

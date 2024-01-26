@@ -3,7 +3,6 @@
 #include "qdebug.h"
 #include <QMouseEvent>
 #include <math.h>
-#include <string>
 
 TilesSelector::TilesSelector(): font(FONT_LOC)
 {
@@ -34,9 +33,7 @@ void TilesSelector::initializeGL()
 {
     initializeOpenGLFunctions();
     glClearColor(0,0,0.269,0);
-#ifndef WIN32
     glBlendColor(0.0f, 0.0f, 0.0f, 0.5f);
-#endif
     glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
     if(glIsEnabled(GL_MULTISAMPLE_ARB)){
         glDisable(GL_MULTISAMPLE_ARB);

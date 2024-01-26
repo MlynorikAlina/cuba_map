@@ -11,7 +11,7 @@ class StaticMapGL: public MapGL
 {
 
 public:
-    StaticMapGL();
+    StaticMapGL(QWidget* parent = nullptr);
     ~StaticMapGL();
     void setParams(const QString &par);
     void loadParams();

@@ -7,6 +7,8 @@
 #include <iostream>
 #include <utility>
 
+using namespace std;
+
 OverpassFilter::OverpassFilter() : displayNoTags(false), _isBox(false), _isRound(false) {}
 
 string OverpassFilter::to_string(string additional) {

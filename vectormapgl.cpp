@@ -10,18 +10,30 @@
 #include <QJsonObject>
 #include <QProcess>
 #include <QTextStream>
+#include <QThread>
 #include <clickdetector.h>
 #include <iomanip>
 #include <math.h>
 #include <qevent.h>
 #include <sstream>
 
+using namespace std;
 
-VectorMapGL::VectorMapGL():  parser(OverpassFilter())
+VectorMapGL::VectorMapGL(QWidget* parent)
 {
+    if(parent)
+        setParent(parent);
     style = SettingsScreen::getVecStyle();
     updateStyle();
-    prev.setBox(181, 361, -1, -1);
+    vml = new VectorMapDataLoader(&style_color, &style_stroke, &b);
+    progress = new QProgressBar;
+    progress->setRange(0,0);
+    progress->setValue(-1);
+    progress->setParent(this);
+    progress->setGeometry(0,0,W_WIDTH,25);
+
+    connect(vml, SIGNAL(finished()), this, SLOT(update()));
+    connect(vml, SIGNAL(finished()), progress, SLOT(hide()));
 }
 
 
@@ -36,7 +48,7 @@ void VectorMapGL::paintGL()
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    for(auto e:lines){
+    for(auto e:vml->getLines()){
         glColor3ub(e.first.color[0],e.first.color[1],e.first.color[2]);
         glLineWidth(e.first.stroke);
         glVertexPointer(2, GL_DOUBLE, 0, e.second.constData());
@@ -57,8 +69,8 @@ void VectorMapGL::mousePressEvent(QMouseEvent *event)
     double xd = x/lon_tr_coeff + b.minLon;
     double yd = y/lat_tr_coeff + b.minLat;
 
-    for(auto e:lines){
-        if(e.first.id.size()>0 && wayTags[e.first.id].getBorder().isIn(xd, yd)){
+    for(auto e:vml->getLines()){
+        if(e.first.id.size()>0 && vml->getWayTags()[e.first.id].getBorder().isIn(xd, yd)){
             bool selected = false;
             /*for (int i = 0; i < e.second.size(); i+=2) {
                 if(select.isIn(e.second[i].x(), e.second[i].y())){
@@ -76,9 +88,9 @@ void VectorMapGL::mousePressEvent(QMouseEvent *event)
             }
             if(selected){
                 e.first.color[0]=0xff;e.first.color[0]=0x00;e.first.color[0]=0x00;
-                for(auto tg: wayTags[e.first.id].getAttributes().getTags())
-                    qDebug()<<QString::fromStdString(tg.first)<<" "<<QString::fromStdString(tg.second);
-                qDebug()<<Qt::endl;
+                for(auto tg: vml->getWayTags()[e.first.id].getAttributes().getTags())
+                    qInfo()<<QString::fromStdString(tg.first)<<" "<<QString::fromStdString(tg.second);
+                qInfo()<<Qt::endl;
             }
         }
     }
@@ -121,8 +133,6 @@ void VectorMapGL::updateStyle()
     }
 }
 
-
-
 void VectorMapGL::setBounds()
 {
     double dist = this->dist.toDouble();
@@ -147,79 +157,13 @@ void VectorMapGL::loadParams()
         c_lon = sl[1].toDouble();
         osmFileDir = ss.readLine();
         setBounds();
-        loadData();
+        progress->show();
+        vml->start();
     }
 
 }
 
-void VectorMapGL::loadData()
-{
-
-    map<string,NodeAttributes> nodes;
-    list<pair<string, WayData>>  ways;
-
-    parser.setFilterBbox(b.minLon,b.minLat,b.maxLon,b.maxLat);
-    parser.setOsmFile(TMP_VEC_OSM);
-    parser.appendNodes(nodes);
-    parser.appendWays(ways, nodes);
-    loadTexture(TMP_VEC_TEXTURE);
-
-    ways.sort(wc());
-
-    prev.setBox(min(floor(b.minLat/TILE_STEP)*TILE_STEP+90, prev.minLat), min(floor(b.minLon/TILE_STEP)*TILE_STEP+180, prev.minLon), max(floor(b.maxLat/TILE_STEP)*TILE_STEP+90, prev.maxLat), max(floor(b.maxLon/TILE_STEP)*TILE_STEP+180, prev.maxLon));
-
-    for (auto w: ways) {
-        Bbox box;
-        w.second.getBorder();
-        QVector<double> points;
-        uint8_t* color = new uint8_t[3];
-        color[0] = 0xd3, color[1] = 0xd2, color[2] = 0xd2;
-        uint8_t stroke = 1;
-        GLenum mode = GL_POLYGON;
-        bool display = false;
-        for (auto tg: w.second.getAttributes().getTags()) {
-            QString f = QString::fromStdString(tg.first);
-            QString f1 = f + "-" + QString::fromStdString(tg.second);
-            if(style_color.contains(f)){
-                display = true;
-                for(int i=0;i<3;i++)
-                    color[i] = style_color[f][i];
-            }
-            if(style_color.contains(f1)){
-                display = true;
-                for(int i=0;i<3;i++)
-                    color[i] = style_color[f1][i];
-            }
-
-
-            if(style_stroke.contains(f)){
-                display = true;
-                stroke = style_stroke[f];
-                mode = GL_LINE_STRIP;
-            }
-            if(style_stroke.contains(f1)){
-                display = true;
-                stroke = style_stroke[f1];
-                mode = GL_LINE_STRIP;
-            }
-
-        }
-        if(display){
-            for (auto n: w.second.getNodeRefs()) {
-                points.push_back(n->getLon());
-                points.push_back(n->getLat());
-            }
-            if(points.size()<3 || abs(points[0] - points[points.size()-2]) > 0 || abs(points[1] - points[points.size()-1]) > 0)
-                mode = GL_LINE_STRIP;
-            lines.push_back({WStyle(w.first, mode, color, stroke),points});
-            wayTags.insert({w.first, w.second});
-        }
-
-
-    }
-}
-
-void VectorMapGL::loadTexture(QString file)
+void VectorMapDataLoader::loadTexture(QString file)
 {
     QFile f(file);
     QString s;
@@ -237,21 +181,32 @@ void VectorMapGL::loadTexture(QString file)
                 points.push_back(e.toArray()[0].toDouble());
                 points.push_back(e.toArray()[1].toDouble());
             }
-            lines.push_back({WStyle("",GL_POLYGON, color, 1),points});
+            lines.append({WStyle("",GL_POLYGON, color, 1),points});
         }
     }
+    f.close();
+}
+
+map<string, WayData> VectorMapDataLoader::getWayTags() const
+{
+    return wayTags;
+}
+
+QVector<QPair<WStyle, QVector<double> > > VectorMapDataLoader::getLines() const
+{
+    return lines;
 }
 
 void VectorMapGL::setParams(const QString &par)
 {
     __TIME__
+    makeCurrent();
     dist = par;
     QString newStyle = SettingsScreen::getVecStyle();
     if(newStyle!=style){
         style = newStyle;
         updateStyle();
     }
-    makeCurrent();
     loadParams();
     resizeGL(width(), height());
     update();
@@ -263,4 +218,75 @@ void IBbox::set(int minLat, int minLon, int maxLat, int maxLon)
 {
     this->maxLat = maxLat; this->maxLon = maxLon;
     this->minLat = minLat; this->minLon = minLon;
+}
+
+void VectorMapDataLoader::run()
+{
+    map<string,NodeAttributes> nodes;
+    list<pair<string, WayData>>  ways;
+
+    parser.setFilterBbox(b->minLon,b->minLat,b->maxLon,b->maxLat);
+    parser.setOsmFile(TMP_VEC_OSM);
+    parser.appendNodes(nodes);
+    parser.appendWays(ways, nodes);
+    loadTexture(TMP_VEC_TEXTURE);
+
+    ways.sort(wc());
+
+    prev.setBox(min(floor(b->minLat/TILE_STEP)*TILE_STEP+90, prev.minLat), min(floor(b->minLon/TILE_STEP)*TILE_STEP+180, prev.minLon), max(floor(b->maxLat/TILE_STEP)*TILE_STEP+90, prev.maxLat), max(floor(b->maxLon/TILE_STEP)*TILE_STEP+180, prev.maxLon));
+
+    for (auto w: ways) {
+        Bbox box;
+        w.second.getBorder();
+        QVector<double> points;
+        uint8_t* color = new uint8_t[3];
+        color[0] = 0xd3, color[1] = 0xd2, color[2] = 0xd2;
+        uint8_t stroke = 1;
+        GLenum mode = GL_POLYGON;
+        bool display = false;
+        for (auto tg: w.second.getAttributes().getTags()) {
+            QString f = QString::fromStdString(tg.first);
+            QString f1 = f + "-" + QString::fromStdString(tg.second);
+            if(style_color->contains(f)){
+                display = true;
+                for(int i=0;i<3;i++)
+                    color[i] = style_color->value(f)[i];
+            }
+            if(style_color->contains(f1)){
+                display = true;
+                for(int i=0;i<3;i++)
+                    color[i] = style_color->value(f1)[i];
+            }
+
+
+            if(style_stroke->contains(f)){
+                display = true;
+                stroke = style_stroke->value(f);
+                mode = GL_LINE_STRIP;
+            }
+            if(style_stroke->contains(f1)){
+                display = true;
+                stroke = style_stroke->value(f1);
+                mode = GL_LINE_STRIP;
+            }
+
+        }
+        if(display){
+            for (auto n: w.second.getNodeRefs()) {
+                points.push_back(n->getLon());
+                points.push_back(n->getLat());
+            }
+            if(points.size()<3 || abs(points[0] - points[points.size()-2]) > 0 || abs(points[1] - points[points.size()-1]) > 0)
+                mode = GL_LINE_STRIP;
+            lines.push_back({WStyle(w.first, mode, color, stroke),points});
+            wayTags.insert({w.first, w.second});
+        }
+    }
+}
+
+VectorMapDataLoader::VectorMapDataLoader(QHash<QString, uint8_t *> *style_color, QHash<QString, uint8_t> *style_stroke, Bbox *b) :
+    style_color(style_color),
+    style_stroke(style_stroke), parser(OverpassFilter()), b(b)
+{
+    prev.setBox(181, 361, -1, -1);
 }

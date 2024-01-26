@@ -9,6 +9,7 @@
 #include <tiles/OverpassFilter.h>
 #include <QGroupBox>
 #include <QRadioButton>
+#include <QScrollArea>
 
 struct FeatureList{
     QJsonObject jobject;
@@ -17,9 +18,7 @@ private:
     void defaultInit();
 };
 
-namespace Ui {
-class SettingsScreen;
-}
+
 
 class SettingsScreen : public QWidget
 {
@@ -34,9 +33,9 @@ public:
     static QString getStatStyle();
 private:
     FeatureList fl;
-    Ui::SettingsScreen *ui;
     QTabWidget* filter;
     QVector<QRadioButton *> theme;
+    QScrollArea* w;
     static QVector<QString> themeVec;
     static QVector<QString> themeStat;
     static QMap<int, QMap<QString, bool>> h_filter;

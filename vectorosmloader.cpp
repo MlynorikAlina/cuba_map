@@ -30,13 +30,13 @@ void VectorOsmLoader::run()
     QStringList args;
     for(int i = floor((b.minLat)/PLANET_TILES_STEP)*PLANET_TILES_STEP; i<=floor((b.maxLat)/PLANET_TILES_STEP)*PLANET_TILES_STEP;i+=PLANET_TILES_STEP)
         for(int j = floor((b.minLon)/PLANET_TILES_STEP)*PLANET_TILES_STEP; j<=floor((b.maxLon)/PLANET_TILES_STEP)*PLANET_TILES_STEP;j+=PLANET_TILES_STEP)
-            args<<PBF_DIR + QString::number(i + 90) + "_" + QString::number(j + 180) + ".osm.pbf";
+            args<<WORLD_PBF_DIR + QString::number(i + 90) + "_" + QString::number(j + 180) + ".osm.pbf";
 
     args<<box<<"--drop-author" << "--drop-version"<<"--complete-ways"<<"--drop-broken-refs"<<QString("-o=") + TMP_VEC_OSM;
 
 
     QProcess proc;
-    proc.start("osmconvert", args);
+    proc.start(OSMCONVERT, args);
     if (!proc.waitForStarted(-1) || !proc.waitForFinished(-1)) {
         return ;
     }

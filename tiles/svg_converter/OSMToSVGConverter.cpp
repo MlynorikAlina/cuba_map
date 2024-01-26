@@ -6,8 +6,13 @@
 #include <stack>
 #include <iostream>
 #include <params.h>
+#include <QDir>
 #include "OSMToSVGConverter.h"
 #include "../GraphicPrimitives.h"
+#include <sstream>
+#include <iomanip>
+
+using namespace std;
 
 double geoInfo::km2lat(double dist) {
     return dist / KM_IN_1_DEG_LAT;
@@ -24,7 +29,7 @@ double geoInfo::_kmIn1degLon(double lon) {
 
 void OSMToSVGConverter::draw(const string &patternFile, double layerDist) {
     painter.start();
-    if(filesystem::exists(patternFile))
+    if(QDir().exists(QString::fromStdString(patternFile)))
         painter.addPatternsFromFile(patternFile);
     painter.rect({0, 0}, painter.WIDTH, painter.HEIGHT, "osm");
 

@@ -8,6 +8,7 @@
 #include <list>
 #include "OSMParser.h"
 
+using namespace std;
 
 OSMParse::OSMParse(const string &osmFileName, const OverpassFilter &filter) : filter(filter) {
     if (filter.getIncludedFeatures().empty()) {

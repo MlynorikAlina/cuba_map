@@ -1,15 +1,13 @@
 #ifndef TILESSELECTORSCREEN_H
 #define TILESSELECTORSCREEN_H
 
+#include "qpushbutton.h"
 #include <QPropertyAnimation>
 #include <QWidget>
 #include <tilesselector.h>
 
 #include <tiles/OverpassFilter.h>
 
-namespace Ui {
-class TilesSelectorScreen;
-}
 
 class TilesSelectorScreen : public QWidget
 {
@@ -22,7 +20,7 @@ public:
 signals:
     void clicked();
 private:
-    Ui::TilesSelectorScreen *ui;
+    QPushButton* parseButton;
     TilesSelector* tileSelector;
 };
 

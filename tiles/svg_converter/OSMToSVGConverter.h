@@ -27,8 +27,8 @@ private:
     SVGPainter painter;
     EleContoursProcessor* elePainter;
     CoastlinePainter texturePainter;
-    map<string,NodeAttributes> nodes;
-    list<pair<string, WayData>>  ways;
+    std::map<std::string,NodeAttributes> nodes;
+    std::list<std::pair<std::string, WayData>>  ways;
     Bbox bounds;
 
     double LAT_TRANSFORM_COEFFICIENT;
@@ -38,15 +38,15 @@ private:
     double convertLat(double lat);
     double convertLon(double lon);
 public:
-    OSMToSVGConverter(const string &osmFileName, const string &textureFile, OverpassFilter filter,
-                      const string &SVGFileName, const string &CSSFileName, int width, int height);
-    OSMToSVGConverter(const string &osmFileName, const string &textureFile, OverpassFilter filter,
-                      const string &SVGFileName, const string &CSSFileName, Bbox box, int width, int height);
+    OSMToSVGConverter(const std::string &osmFileName, const std::string &textureFile, OverpassFilter filter,
+                      const std::string &SVGFileName, const std::string &CSSFileName, int width, int height);
+    OSMToSVGConverter(const std::string &osmFileName, const std::string &textureFile, OverpassFilter filter,
+                      const std::string &SVGFileName, const std::string &CSSFileName, Bbox box, int width, int height);
 
-    OSMToSVGConverter(const string &osmFileDir, const string &contoursFile,
-                      const string &textureFile, OverpassFilter filter, const string &SVGFileName,
-                      const string &CSSFileName, int width, int height);
-    void draw(const string &patternFile, double layerDist);
+    OSMToSVGConverter(const std::string &osmFileDir, const std::string &contoursFile,
+                      const std::string &textureFile, OverpassFilter filter, const std::string &SVGFileName,
+                      const std::string &CSSFileName, int width, int height);
+    void draw(const std::string &patternFile, double layerDist);
     void setBox(double latMin, double lonMin, double latMax, double lonMax);
     void setBox(const Bbox &b);
 

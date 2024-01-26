@@ -11,7 +11,6 @@
 #include <ostream>
 #include "../OverpassFilter.h"
 
-using namespace std;
 
 class NodeAttributes {
 private:
@@ -28,24 +27,24 @@ public:
 
 class WayAttributes {
 private:
-    map<string, string> tags;
+    std::map<std::string, std::string> tags;
 public:
     WayAttributes();
 
-    WayAttributes(initializer_list<pair<const string, string>> list);
+    WayAttributes(std::initializer_list<std::pair<const std::string, std::string>> list);
 
-    const map<string, string> &getTags() const;//TODO::change to multimap???
-    bool containsTag(const string &key);
+    const std::map<std::string, std::string> &getTags() const;//TODO::change to multimap???
+    bool containsTag(const std::string &key);
 
-    void addTag(string key, string value);
+    void addTag(std::string key, std::string value);
 
-    friend ostream &operator<<(ostream &os, const WayAttributes &attributes);
+    friend std::ostream &operator<<(std::ostream &os, const WayAttributes &attributes);
 };
 
 class WayData {
 private:
     WayAttributes attributes;
-    vector<const NodeAttributes *> nodeRefs;
+    std::vector<const NodeAttributes *> nodeRefs;
     bool _isArea;
     Bbox border;
 public:
@@ -53,18 +52,18 @@ public:
 
     explicit WayData(const WayAttributes &attributes);
 
-    WayData(const WayAttributes &attributes, const vector<const NodeAttributes *> &nodeRefs);
+    WayData(const WayAttributes &attributes, const std::vector<const NodeAttributes *> &nodeRefs);
     WayData(const WayData& wd);
 
     void addNodeRef(const NodeAttributes *ref);
 
-    void addTag(string key, string value);
+    void addTag(std::string key, std::string value);
 
     const WayAttributes &getAttributes() const;
 
-    const vector<const NodeAttributes *> &getNodeRefs() const;
+    const std::vector<const NodeAttributes *> &getNodeRefs() const;
 
-    friend ostream &operator<<(ostream &os, const WayData &data);
+    friend std::ostream &operator<<(std::ostream &os, const WayData &data);
 
     WayData operator=(const WayData &wd);
 
@@ -81,20 +80,20 @@ public:
 class RelData{
 private:
     WayAttributes attributes;
-    vector<string> nodeRefs;
-    vector<string> wayRefs;
-    vector<string> relRefs;
+    std::vector<std::string> nodeRefs;
+    std::vector<std::string> wayRefs;
+    std::vector<std::string> relRefs;
 public:
     RelData() {}
-    void addTag(string key, string value);
-    void addNode(string node);
-    void addWay(string way);
-    void addRel(string rel);
+    void addTag(std::string key, std::string value);
+    void addNode(std::string node);
+    void addWay(std::string way);
+    void addRel(std::string rel);
 
     WayAttributes getAttributes() const;
-    vector<string> getNodeRefs() const;
-    vector<string> getWayRefs() const;
-    vector<string> getRelRefs() const;
+    std::vector<std::string> getNodeRefs() const;
+    std::vector<std::string> getWayRefs() const;
+    std::vector<std::string> getRelRefs() const;
 };
 
 #endif //MAPDOWNLOADER_OSMDATA_H

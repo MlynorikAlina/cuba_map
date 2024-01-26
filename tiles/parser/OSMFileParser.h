@@ -7,15 +7,14 @@
 
 #include <fstream>
 
-using namespace std;
 
 class OSMFileParser {
 private:
-    ifstream file;
+    std::ifstream file;
     double xScale;
     double yScale;
 public:
-    OSMFileParser(const string &fileName, double xScale, double yScale);
+    OSMFileParser(const std::string &fileName, double xScale, double yScale);
     void parse();
     virtual ~OSMFileParser();
 

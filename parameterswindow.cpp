@@ -12,7 +12,10 @@ ParametersWindow::ParametersWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->latEdit->setText("23.01373");
     ui->lonEdit->setText("-82.2425");
-
+    ui->distance->setMaximumWidth(W_WIDTH-20);
+    ui->progressBar->setGeometry(10, 200, W_WIDTH-20, 25);
+    ui->cancelButton->setGeometry(W_WIDTH/2-90, 200, 88, 25);
+    ui->okButton->setGeometry(W_WIDTH/2+10, 200, 88, 25);
 
     QRegExpValidator *validatorLat =
         new QRegExpValidator(QRegExp("^-?(90.0)|((([0-8]\\d)|\\d)\\.\\d{6})$"));
@@ -25,7 +28,7 @@ ParametersWindow::ParametersWindow(QWidget *parent) :
     ui->progressBar->setValue(-1);
     ui->progressBar->hide();
 
-    connect(ui->cancelButton, &QPushButton::clicked, this, &QWidget::hide);
+    connect(ui->cancelButton, &QPushButton::clicked, this, &ParametersWindow::cancel);
     connect(ui->okButton, &QPushButton::clicked, this, &ParametersWindow::getParams);
 }
 

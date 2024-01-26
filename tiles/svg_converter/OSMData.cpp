@@ -3,6 +3,7 @@
 //
 
 #include "OSMData.h"
+using namespace std;
 
 NodeAttributes::NodeAttributes(double lat, double lon) : lat(lat), lon(lon){}
 

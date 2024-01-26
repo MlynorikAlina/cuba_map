@@ -9,10 +9,12 @@
 #include <math.h>
 #include <QKeyEvent>
 
-DynamicMapGL::DynamicMapGL(QString params):
+DynamicMapGL::DynamicMapGL(QString params, QWidget* parent):
     tex_c({{0,0},{0,1},{1,1},{1,0}})
 {
     paramsFile = params;
+    if(parent)
+        setParent(parent);
 }
 
 DynamicMapGL::~DynamicMapGL()
@@ -102,8 +104,8 @@ void DynamicMapGL::loadTiles()
     for(int i = 0; i<texture.size(); i++)
         delete texture[i];
     texture.clear();
-    double frac = min(TILE_STEP, dynamicTilesSize[dist].toDouble());
-    int prec = max(dynamicTilesPrec[dist],TILE_STEP_PREC);;
+    double frac = std::min(TILE_STEP, dynamicTilesSize[dist].toDouble());
+    int prec = std::max(dynamicTilesPrec[dist],TILE_STEP_PREC);;
 
     for(double lat = floor((b.maxLat) / frac)*frac; lat>=floor((b.minLat) / frac)*frac; lat-=frac){
         QString ltext = tilesDir;

@@ -36,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->parametersScreen, &ParametersWindow::showDynamic, this, &MainWindow::showDynamicMap);
     connect(ui->parametersScreen, &ParametersWindow::showVector, this, &MainWindow::showVectorMap);
     connect(ui->parametersScreen, &ParametersWindow::showStatic, this, &MainWindow::showStaticMap);
+    connect(ui->parametersScreen, &ParametersWindow::cancel, this, &MainWindow::showDynamicScreen);
+
 
     connect(ui->parametersScreen, &ParametersWindow::parametersLoaded, mapLoader, &MapLoader::loadDynamic);
     connect(ui->parametersScreen, &ParametersWindow::parametersLoaded, mapLoader,
@@ -44,6 +46,10 @@ MainWindow::MainWindow(QWidget *parent)
             &MapLoader::loadStatic);
 
     connect(ui->tilesSelectorScreen,&TilesSelectorScreen::clicked, this,&MainWindow::showDynamicParameters);
+    ui->settingsScreen->resize(QSize(W_WIDTH, W_HEIGHT));
+    ui->tilesSelectorScreen->resize(QSize(W_WIDTH, W_HEIGHT));
+    ui->mapScreen->resize(QSize(W_WIDTH, W_HEIGHT));
+    ui->parametersScreen->resize(QSize(W_WIDTH, W_HEIGHT));
     showDynamicScreen();
 }
 
@@ -93,11 +99,11 @@ void MainWindow::showDynamicMap(QVector<QString> checkedDist) {
 
 void MainWindow::showVectorMap(QVector<QString> checkedDist) {
     mapOptions->menuAction()->setVisible(true);
-    ui->mapScreen->show();
-    ui->mapScreen->setMapVector(checkedDist);
     ui->tilesSelectorScreen->hide();
     ui->settingsScreen->hide();
     ui->parametersScreen->hide();
+    ui->mapScreen->show();
+    ui->mapScreen->setMapVector(checkedDist);
 }
 
 void MainWindow::showStaticMap(QVector<QString> checkedDist) {

@@ -5,6 +5,8 @@
 
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
+#include <QProgressBar>
+#include <QThread>
 
 #include <tiles/OverpassFilter.h>
 
@@ -17,9 +19,9 @@ struct WStyle{
     GLenum mode;
     uint8_t* color;
     uint8_t stroke;
-    string id;
+    std::string id;
 
-    WStyle(string id, GLenum mode, uint8_t* color, uint8_t str):mode(mode), color(color), stroke(str), id(id){}
+    WStyle(std::string id, GLenum mode, uint8_t* color, uint8_t str):mode(mode), color(color), stroke(str), id(id){}
 };
 
 struct IBbox{
@@ -31,36 +33,53 @@ public:
     void set(int minLat, int minLon, int maxLat, int maxLon);
 };
 
+class VectorMapDataLoader: public QThread
+{
+public:
+    VectorMapDataLoader(QHash<QString, uint8_t *> *style_color, QHash<QString, uint8_t> *style_stroke, Bbox* b);
+
+    std::map<std::string, WayData> getWayTags() const;
+    QVector<QPair<WStyle, QVector<double> > > getLines() const;
+
+private:
+    void loadTexture(QString file);
+    std::map<std::string,WayData> wayTags;
+    QVector<QPair<WStyle, QVector<double>>> lines;
+    QHash<QString, uint8_t*> *style_color;
+    QHash<QString, uint8_t> *style_stroke;
+    OSMParse parser;
+    Bbox prev;
+    Bbox* b;
+protected:
+    void run();
+};
+
 class VectorMapGL : public MapGL
 {
 public:
-    VectorMapGL();
+    VectorMapGL(QWidget* parent = nullptr);
 
     // QOpenGLWidget interface
     void setBounds();
     void loadParams();
-    void loadData();
-    void loadTexture(QString file);
     void setParams(const QString &par);
 protected:
     void paintGL();
     void mousePressEvent(QMouseEvent *event);
 private:
     void updateStyle();
-    
-    OSMParse parser;
     QString dist;
     QString osmFileDir;
     QString style;
-    map<string,WayData> wayTags;
-
-    Bbox prev;
 
     QHash<QString, uint8_t*> style_color;
     QHash<QString, uint8_t> style_stroke;
-    QVector<QPair<WStyle, QVector<double>>> lines;
+    VectorMapDataLoader* vml;
+
+    QProgressBar* progress;
 
 };
+
 
 
 

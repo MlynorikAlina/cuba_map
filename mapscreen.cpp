@@ -1,26 +1,20 @@
 #include "mapscreen.h"
-#include "ui_mapscreen.h"
 #include <QSizePolicy>
 #include "params.h"
 
 MapScreen::MapScreen(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::MapScreen)
+    QWidget(parent)
 {
-    ui->setupUi(this);
     dynamicMapDir = DYNAMIC_MAP_DIR;
-    dynamicMap = new DynamicMapGL(dynamicMapDir + "params.txt");
-    vectorMap = new VectorMapGL;
-    staticMap = new StaticMapGL;
-    int h = ui->verticalLayoutWidget->height();
-    vectorMap->setMinimumHeight(h);
-    dynamicMap->setMinimumHeight(h);
-    staticMap->setMinimumHeight(h);
-    ui->verticalLayout->addWidget(dynamicMap);
-    ui->verticalLayout->addWidget(vectorMap);
-    ui->verticalLayout->addWidget(staticMap);
-
+    dynamicMap = new DynamicMapGL(dynamicMapDir + "params.txt", this);
+    vectorMap = new VectorMapGL(this);
+    staticMap = new StaticMapGL(this);
+    vectorMap->resize(QSize(W_WIDTH,W_HEIGHT));
+    dynamicMap->resize(QSize(W_WIDTH,W_HEIGHT));
+    staticMap->resize(QSize(W_WIDTH,W_HEIGHT));
+    //staticMap->setMaximumSize(QSize(w+1,h+1));
     dynamicMap->setFocusPolicy(Qt::StrongFocus);
+    qInfo()<<__PRETTY_FUNCTION__;
 }
 
 
@@ -41,8 +35,8 @@ void MapScreen::setMapVector(QVector<QString> checkedDist)
     staticMap->hide();
     this->checkedDist = checkedDist;
     currentRadius = 0;
-    vectorMap->setParams(checkedDist[currentRadius]);
     vectorMap->show();
+    vectorMap->setParams(checkedDist[currentRadius]);
 }
 
 void MapScreen::setMapStatic(QVector<QString> checkedDist)
@@ -57,7 +51,9 @@ void MapScreen::setMapStatic(QVector<QString> checkedDist)
 
 MapScreen::~MapScreen()
 {
-    delete ui;
+    delete dynamicMap;
+    delete staticMap;
+    delete vectorMap;
 }
 
 void MapScreen::zoomIn(){

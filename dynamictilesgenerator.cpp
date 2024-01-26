@@ -25,7 +25,7 @@ void DynamicTilesGenerator::run()
 
         UpdateMode mode = updateMapParams(dynamicMapDir+e+"_p.txt", filter, "0","0");
 
-        double frac = min(TILE_STEP, dynamicTilesSize[e].toDouble());
+        double frac = std::min(TILE_STEP, dynamicTilesSize[e].toDouble());
         int tsize = round(size*TILE_STEP/frac);
         QString tempAster = PARSED_ASTER + e + "/";
         QDir dir(tempAster);
@@ -62,7 +62,7 @@ void DynamicTilesGenerator::run()
 
                 lat = sl[0].toDouble();
                 lon = sl[1].toDouble();
-                prec = max(dynamicTilesPrec[e],TILE_STEP_PREC);
+                prec = std::max(dynamicTilesPrec[e],TILE_STEP_PREC);
 
                 OSMToSVGConverter* cv = NULL;
 
@@ -119,7 +119,7 @@ UpdateMode DynamicTilesGenerator::updateMapParams(QString fileOut,
         QString prevStyle = in.readLine();
         QString tlat = in.readLine();
         QString tlon = in.readLine();
-        set<mf::MapFeature> includes;
+        std::set<mf::MapFeature> includes;
         while (!in.atEnd()) {
             includes.insert(mf::from_string(in.readLine().toStdString()));
         }

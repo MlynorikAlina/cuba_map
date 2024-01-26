@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "SVGPainter.h"
+#include <QDir>
 #include <QFile>
 #include <iostream>
 #include <qdebug.h>
@@ -11,6 +12,8 @@
 #include <valarray>
 
 #define PI 3.14159265
+
+using namespace std;
 
 
 SVGPainter::SVGPainter(const string &SVGFileName, const int width, const int height) : WIDTH(width), HEIGHT(height) {
@@ -20,9 +23,11 @@ SVGPainter::SVGPainter(const string &SVGFileName, const int width, const int hei
 SVGPainter::SVGPainter(const string &SVGFileName, const string &CSSFileName, int width, int height) : WIDTH(width),
                                                                                                       HEIGHT(height),
                                                                                                       cssFileName(
-                                                                                                              CSSFileName) {
-    pathToCSSFile = filesystem::absolute(cssFileName);
-    cerr<<pathToCSSFile.string()<<endl;
+                                                                                                      CSSFileName) {
+    QDir dir(QString::fromStdString(SVGFileName));
+    dir.setPath(dir.filePath(".."));
+    dir.makeAbsolute();
+    pathToCSSFile = dir.relativeFilePath(QDir(QString::fromStdString(CSSFileName)).absolutePath()).toStdString();
     svgFile.open(SVGFileName);
     cssFile.open(cssFileName, ios_base::app);
 }
@@ -142,7 +147,8 @@ void SVGPainter::ellipseRotated(SVGPainter::SVGPoint f1, SVGPainter::SVGPoint f2
 }
 void SVGPainter::changeStyleInSVG(const string &svgFileName, const string &styleCSS) {
     ifstream f(svgFileName);
-    string tfn = filesystem::path(svgFileName).parent_path().string() + "t" + filesystem::path(svgFileName).filename().string();
+    QString fn = QDir(QString::fromStdString(svgFileName)).dirName();
+    string tfn = QString::fromStdString(svgFileName).replace(fn, "t"+fn).toStdString();
     ofstream t(tfn);
     string s;
     getline(f,s);
@@ -150,6 +156,6 @@ void SVGPainter::changeStyleInSVG(const string &svgFileName, const string &style
     while (getline(f,s)){
         t<<s<<endl;
     }
-    filesystem::remove(svgFileName);
-    filesystem::rename(tfn,svgFileName);
+    QDir(QString::fromStdString(svgFileName)).removeRecursively();
+    QFile::rename(QString::fromStdString(tfn),QString::fromStdString(svgFileName));
 }

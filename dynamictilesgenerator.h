@@ -35,7 +35,7 @@ private:
     double lat;
     double lon;
     QString style;
-    QString svgFile = QString(STYLE_DIR) + "test.svg";
+    QString svgFile = QString(STATIC_STYLE_DIR) + "test.svg";
     QVector<QString> checkedDist;
     Bbox b;
     // QThread interface

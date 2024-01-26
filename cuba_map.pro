@@ -1,14 +1,18 @@
 QT       += core gui network opengl svg
 
+#set PROJ_DATA = "../cuba_map_data/python/Lib/site-packages/rasterio/proj_data/"
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17
+CONFIG += c++14
+QMAKE_CXXFLAGS += -g
+CONFIG += console
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-LIBS += -lzip -lcairo -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lcairo -lrsvg-2 -lglut -lglfw -lGL -lGLEW -ljsoncpp -lpugixml -lftgl -LGLU
+LIBS += -lzip -lcairo -lgio-2.0 -lgobject-2.0 -lglib-2.0  -lrsvg-2 -lglut -lglfw -lGL -lGLEW -ljsoncpp -lpugixml -lftgl -LGLU
 
 INCLUDEPATH += /usr/include/librsvg-2.0 \
     /usr/include/cairo \
@@ -16,6 +20,8 @@ INCLUDEPATH += /usr/include/librsvg-2.0 \
     /usr/lib/x86_64-linux-gnu/glib-2.0/include \
     /usr/include/gdk-pixbuf-2.0 \
     /usr/include/freetype2
+
+
 
 SOURCES += \
     asterdownloader.cpp \
@@ -91,17 +97,9 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui \
-    mapscreen.ui \
-    parameterswindow.ui \
-    settingsscreen.ui \
-    tilesselectorscreen.ui
+    parameterswindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-DISTFILES += \
-    data/download_sources.json \
-    data/map_parameters.json \
-    vec_style/style.json
