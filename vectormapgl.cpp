@@ -70,7 +70,7 @@ void VectorMapGL::mousePressEvent(QMouseEvent *event)
     double yd = y/lat_tr_coeff + b.minLat;
 
     for(auto e:vml->getLines()){
-        if(e.first.id.size()>0 && vml->getWayTags()[e.first.id].getBorder().isIn(xd, yd)){
+        if(e.first.id.size()>0 && vml->getWayTags().at(e.first.id).getBorder().isIn(xd, yd)){
             bool selected = false;
             /*for (int i = 0; i < e.second.size(); i+=2) {
                 if(select.isIn(e.second[i].x(), e.second[i].y())){
@@ -88,7 +88,7 @@ void VectorMapGL::mousePressEvent(QMouseEvent *event)
             }
             if(selected){
                 e.first.color[0]=0xff;e.first.color[0]=0x00;e.first.color[0]=0x00;
-                for(auto tg: vml->getWayTags()[e.first.id].getAttributes().getTags())
+                for(auto tg: vml->getWayTags().at(e.first.id).getAttributes().getTags())
                     qInfo()<<QString::fromStdString(tg.first)<<" "<<QString::fromStdString(tg.second);
                 qInfo()<<Qt::endl;
             }
@@ -187,12 +187,12 @@ void VectorMapDataLoader::loadTexture(QString file)
     f.close();
 }
 
-map<string, WayData> VectorMapDataLoader::getWayTags() const
+const map<string, WayData>& VectorMapDataLoader::getWayTags() const
 {
     return wayTags;
 }
 
-QVector<QPair<WStyle, QVector<double> > > VectorMapDataLoader::getLines() const
+const QVector<QPair<WStyle, QVector<double> > >& VectorMapDataLoader::getLines() const
 {
     return lines;
 }

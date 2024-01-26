@@ -38,8 +38,8 @@ class VectorMapDataLoader: public QThread
 public:
     VectorMapDataLoader(QHash<QString, uint8_t *> *style_color, QHash<QString, uint8_t> *style_stroke, Bbox* b);
 
-    std::map<std::string, WayData> getWayTags() const;
-    QVector<QPair<WStyle, QVector<double> > > getLines() const;
+    const std::map<std::string, WayData>& getWayTags() const;
+    const QVector<QPair<WStyle, QVector<double> > >& getLines() const;
 
 private:
     void loadTexture(QString file);
